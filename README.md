@@ -37,14 +37,28 @@ Make sure you are in the `server` directory when you run the `SOURCE` command, s
 
 The server-side is built using Node.js. To set it up, go back to the root of project and then do:
 
-```bash
-cd server
-npm install
-npm run dev
-```
+1. Navigate to the server directory and install dependencies:
 
-This will install the server dependencies and start the Node.js server.
+    ```bash
+    cd server
+    npm install
+    ```
 
+2. Create a .env file in the server directory with the following content:
+
+    ```bash
+    MYSQL_HOST='localhost'
+    MYSQL_USER=your_user
+    MYSQL_PASSWORD=your_password
+    MYSQL_DATABASE="tournament_db"
+    ```
+Replace your_user and your_password with your actual MySQL credentials. This configuration will allow the Node.js server to connect to the MySQL database.
+
+3. Start the server:
+
+    ```bash
+    npm run dev
+    ```
 ### Client (React)
 
 The client-side is a React project. Follow these steps to set it up:
