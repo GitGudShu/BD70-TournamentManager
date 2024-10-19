@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# BD70 Tournament Manager
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a **Tournament Management System** for board games, composed of two main parts: the **client-side**, built with React, and the **server-side**, built with Node.js. The system allows users to create tournaments, register players, track match results, and generate leaderboards for various board games.
 
-## Available Scripts
+## Requirements
 
-In the project directory, you can run:
+Before you start, ensure you have the following versions:
+- **Node.js**: v18.18.0
+- **npm**: v9.8.1
 
-### `npm start`
+## Setup Instructions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. Client (React)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The client-side is a React project. Follow these steps to set it up:
 
-### `npm test`
+```bash
+cd client
+npm install
+npm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This will install the necessary dependencies and start the React development server.
 
-### `npm run build`
+### 2. Server (Node.js)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The server-side is built using Node.js. To set it up, go back to the root of project and then do:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+cd server
+npm install
+npm run dev
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This will install the server dependencies and start the Node.js server.
 
-### `npm run eject`
+### 3. Database Setup (MySQL)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+If MySQL is not installed, you will need to install it. Once installed, set up the database by following these steps:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Open the MySQL shell:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   ```bash
+   mysql -u root -p
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. Create the `tournament_db` database:
 
-## Learn More
+   ```sql
+   CREATE DATABASE tournament_db;
+   ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3. Load the data from the `data.sql` file into the database:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   ```sql
+   SOURCE ./data.sql;
+   ```
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Make sure you are in the `server` directory when you run the `SOURCE` command, so the path to the `data.sql` file is correct.
