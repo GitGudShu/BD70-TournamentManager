@@ -10,7 +10,7 @@ Before you start, ensure you have the following versions:
 
 ## Setup Instructions
 
-### 1. Client (React)
+### Client (React)
 
 The client-side is a React project. Follow these steps to set it up:
 
@@ -22,7 +22,7 @@ npm start
 
 This will install the necessary dependencies and start the React development server.
 
-### 2. Server (Node.js)
+### Server (Node.js)
 
 The server-side is built using Node.js. To set it up, go back to the root of project and then do:
 
@@ -34,7 +34,7 @@ npm run dev
 
 This will install the server dependencies and start the Node.js server.
 
-### 3. Database Setup (MySQL)
+### Database Setup (MySQL)
 
 If MySQL is not installed, you will need to install it. Once installed, set up the database by following these steps:
 
