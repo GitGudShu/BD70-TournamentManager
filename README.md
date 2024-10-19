@@ -9,31 +9,6 @@ Before you start, ensure you have the following versions:
 - **npm**: v9.8.1
 
 ## Setup Instructions
-
-### Client (React)
-
-The client-side is a React project. Follow these steps to set it up:
-
-```bash
-cd client
-npm install
-npm start
-```
-
-This will install the necessary dependencies and start the React development server.
-
-### Server (Node.js)
-
-The server-side is built using Node.js. To set it up, go back to the root of project and then do:
-
-```bash
-cd server
-npm install
-npm run dev
-```
-
-This will install the server dependencies and start the Node.js server.
-
 ### Database Setup (MySQL)
 
 If MySQL is not installed, you will need to install it. Once installed, set up the database by following these steps:
@@ -57,3 +32,27 @@ If MySQL is not installed, you will need to install it. Once installed, set up t
    ```
 
 Make sure you are in the `server` directory when you run the `SOURCE` command, so the path to the `data.sql` file is correct.
+
+### Server (Node.js)
+
+The server-side is built using Node.js. To set it up, go back to the root of project and then do:
+
+```bash
+cd server
+npm install
+npm run dev
+```
+
+This will install the server dependencies and start the Node.js server.
+
+### Client (React)
+
+The client-side is a React project. Follow these steps to set it up:
+
+```bash
+cd client
+npm install
+npm start
+```
+
+This will install the necessary dependencies and start the React development server.
