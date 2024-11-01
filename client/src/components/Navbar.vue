@@ -27,7 +27,7 @@
               </q-item>
             </div>
           </router-link>
-          <button @click="logout" class="nav-link logout logout-mobile"><q-icon name="img:logout_white.svg" size="xs" style="margin-right: 0.4em;"></q-icon>DÉCONNEXION</button>
+          <q-btn @click="logout" icon="logout" label="DÉCONNEXION" class="logout logout-mobile text-primary" />
       </div>
 
   </nav>
@@ -142,13 +142,13 @@ width: 100%;
 }
 
 .logout {
-  background-color: inherit;
+  background-color: var(--sad-secondary);
   color: inherit;
   font-size: inherit;
   border: none;
   display: flex;
   align-items: center;
-  padding: 0;
+  padding: .5em 1em;
   cursor: pointer;
 }
 
