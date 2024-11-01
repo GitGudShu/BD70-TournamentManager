@@ -1,9 +1,9 @@
 // app global css in SCSS form
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap");
 :root {
-  --sad-orange: #ed9205;
-  --sad-nightblue: #181632;
-  --sad-secondary: #384045;
+  --sad-orange: #FFCA4B;
+  --sad-nightblue: #585068;
+  --sad-secondary: #f4edff;
   --sad-blue: #1864ab;
   --sad-lightblue: #74c0fc;
   --sad-lightgray: #ced4da;
@@ -11,7 +11,7 @@
   --sad-red: #c92a2a;
   --sad-green: #23a97b;
   --sad-yellow: #fed330;
-  --body-bg: #f0f0f0;
+  --body-bg: #f4edff;
 
   font-family: "Roboto", sans-serif;
   line-height: 1.5;
@@ -27,4 +27,9 @@
 a {
   text-decoration: none;
   color: inherit;
+}
+
+body {
+  background-color: var(--body-bg);
+  margin: 0;
 }

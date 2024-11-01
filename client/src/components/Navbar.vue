@@ -1,27 +1,34 @@
 <template>
   <nav class="navbar">
       <router-link to="/" class="logo-link" exact>
-          <span style="margin-left: 1em; font-size: 20px;">Optimops</span>
+        <img src="logo.png" alt="" class="logo">
       </router-link>
 
-      <div class="nav-links" v-if="!isMobile">
-          <router-link class="nav-link" to="/parametres" exact active-class="navbar-active"><q-icon name="img:settings_white.svg" size="xs" style="margin-right: 0.4em;"></q-icon>Paramètres</router-link>
-          <button @click="logout" class="nav-link logout logout-mobile"><q-icon name="img:logout_white.svg" size="xs" style="margin-right: 0.4em;"></q-icon>Déconnexion</button>
+      <div class="nav-items">
+        <router-link class="nav-link" to ="/" exact >ACCUEIL</router-link>
+        <router-link class="nav-link" to ="/game" exact >JEUX</router-link>
+        <router-link class="nav-link" to ="/tournament" exact >TOURNOIS</router-link>
+        <router-link class="nav-link" to ="/space" exact >MON ESPACE</router-link>
       </div>
 
-      <q-btn color="primary" v-if="isMobile" round icon="menu" flat push text-color="white">
-      <q-menu>
-        <q-list style="min-width: 100px; color: black">
-          <q-item clickable v-close-popup>
-            <router-link class="nav-link" to="/parametres" exact active-class="navbar-active"><q-icon name="img:settings_black.svg" size="xs" style="margin-right: 0.4em;"></q-icon>Paramètres</router-link>
-          </q-item>
-          <q-item clickable v-close-popup>
-            <button @click="logout" class="nav-link logout logout-mobile"><q-icon name="img:logout_black.svg" size="xs" style="margin-right: 0.4em;"></q-icon>Déconnexion</button>
-          </q-item>
-
-        </q-list>
-      </q-menu>
-    </q-btn>
+      <div class="nav-links">
+          <router-link class="nav-link" to="/parametres" exact active-class="navbar-active">
+            <div class="hero-container">
+              <q-item clickable v-ripple>
+                <q-item-section side>
+                  <q-avatar rounded size="40px">
+                    <img src="https://ui-avatars.com/api/?name=Thomas+Chu&background=random" alt="hero">
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-h6 text-accent">Thomas Chu</q-item-label>
+                  <q-item-label caption class="text-caption text-secondary">Administrateur</q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+          </router-link>
+          <button @click="logout" class="nav-link logout logout-mobile"><q-icon name="img:logout_white.svg" size="xs" style="margin-right: 0.4em;"></q-icon>DÉCONNEXION</button>
+      </div>
 
   </nav>
 </template>
@@ -36,7 +43,6 @@ const router = useRouter()
 const route = useRoute()
 
 const windowWidth = ref(window.innerWidth)
-const isMobile = computed(() => windowWidth.value <= 768)
 
 const updateWindowWidth = () => {
   windowWidth.value = window.innerWidth;
@@ -76,6 +82,17 @@ try {
 .logo-link {
   display: flex;
   align-items: center;
+  background-color: var(--sad-secondary);
+  border-radius: 10px;
+  padding: 5px 10px;
+  height: calc(100% - 2em);
+  margin-left: 1em;
+}
+
+.nav-items {
+  display: flex;
+  gap: 2em;
+  margin-left: 1em;
 }
 
 .logo {
@@ -84,6 +101,7 @@ try {
   margin-left: 15px;
   max-height: 100%;
   width: clamp(100px, 10vw, 175px);
+  margin: 0 auto;
 }
 
 .nav-text {
