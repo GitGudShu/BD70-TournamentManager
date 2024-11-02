@@ -1,5 +1,7 @@
 import MainLayout from 'layouts/MainLayout.vue'
 import Home from 'pages/Home.vue'
+import Login from 'pages/Login.vue'
+import CreatePlayer from 'pages/forms/CreatePlayer.vue'
 
 const routes = [
   {
@@ -15,6 +17,14 @@ const routes = [
         component: Home
       }
     ]
+  },
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path: '/create_player',
+    component: CreatePlayer
   },
 
   // Always leave this as last one,

@@ -55,10 +55,8 @@ onMounted(() => {
   flex-direction: column;
   gap: 1em;
   width: 70%;
-  margin: 0 auto;
+  margin: 1em auto;
   height: 100%;
-  margin-top: 1em;
-  margin-bottom: 1em;
 }
 
 .row {

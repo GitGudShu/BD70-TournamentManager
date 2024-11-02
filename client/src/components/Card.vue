@@ -55,10 +55,17 @@ const props = defineProps({
 <style scoped>
 
 .card-wrapper {
-  max-width: calc(50% - 1em);
   display: flex;
-  flex: 1;
-  height: 100%;
+  flex-direction: column;
+  flex: 1 1 calc(50% - 1em);
+  overflow: visible;
+  transition: all 0.15s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-wrapper:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
 }
 
 .card-image {

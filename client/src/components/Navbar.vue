@@ -5,10 +5,11 @@
       </router-link>
 
       <div class="nav-items">
-        <router-link class="nav-link" to ="/" exact >ACCUEIL</router-link>
-        <router-link class="nav-link" to ="/game" exact >JEUX</router-link>
-        <router-link class="nav-link" to ="/tournament" exact >TOURNOIS</router-link>
-        <router-link class="nav-link" to ="/space" exact >MON ESPACE</router-link>
+        <router-link v-for="page in pages" :key="page.path" :to="page.path" class="nav-link"  exact>
+          <q-item-section>
+            {{ page.name }}
+          </q-item-section>
+        </router-link>
       </div>
 
       <div class="nav-links">
@@ -42,6 +43,27 @@ import { api } from 'src/boot/axios'
 const router = useRouter()
 const route = useRoute()
 
+const nav_items = [
+  {
+    name: 'ACCUEIL',
+    path: '/home'
+  },
+  {
+    name: 'JEUX',
+    path: '/games',
+  },
+  {
+    name: "TOURNOIS",
+    path: '/tournament',
+  },
+  {
+    name: 'MON ESPACE',
+    path: '/space',
+  }
+]
+
+const pages = ref(nav_items);
+
 const windowWidth = ref(window.innerWidth)
 
 const updateWindowWidth = () => {
@@ -56,14 +78,24 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', updateWindowWidth);
 })
 
+// Original code (will use later)
+// const logout = async () => {
+//   try {
+//     await api.post('/auth/logout');
+//     localStorage.clear()
+//     router.push("/login");
+//   } catch (error) {
+//     console.error("Logout failed", error);
+//   }
+// }
+
+// Temporary code
 const logout = async () => {
-try {
-  await api.post('/auth/logout');
-  localStorage.clear()
-  router.push("/login");
-} catch (error) {
-  console.error("Logout failed", error);
-}
+  try {
+    router.push("/login");
+  } catch (error) {
+    console.error("Logout failed", error);
+  }
 }
 
 </script>
