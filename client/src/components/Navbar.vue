@@ -13,7 +13,7 @@
       </div>
 
       <div class="nav-links">
-          <router-link class="nav-link" to="/parametres" exact active-class="navbar-active">
+          <router-link class="nav-link" to="/update_player" exact>
             <div class="hero-container">
               <q-item clickable v-ripple>
                 <q-item-section side>
@@ -36,12 +36,9 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { api } from 'src/boot/axios'
-
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const route = useRoute()
 
 const nav_items = [
   {
@@ -138,11 +135,6 @@ const logout = async () => {
 
 .nav-text {
   text-align: center;
-}
-
-.navbar-active {
-border-bottom: var(--sad-orange) 5px solid;
-width: 100%;
 }
 
 .nav-links {

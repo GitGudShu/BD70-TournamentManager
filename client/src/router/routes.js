@@ -15,6 +15,10 @@ const routes = [
       {
         path: 'home',
         component: Home
+      },
+      {
+        path: 'update_player',
+        component: () => import('pages/forms/UpdateProfile.vue')
       }
     ]
   },
