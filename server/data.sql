@@ -140,7 +140,7 @@ CREATE TABLE PlayerMatch (
     FOREIGN KEY (match_id) REFERENCES Matchmaking(match_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
--- INSERTS
+-- INITIAL INSERTS
 INSERT INTO Game (game_name, min_players, max_players, game_type, game_rules) VALUES
 ('Les échecs', 2, 2, 0, 'Jeu de stratégie et de tactique où chaque joueur doit mettre le roi adverse en échec et mat.'),
 ('Othello', 2, 2, 0, 'Jeu de plateau où les joueurs doivent capturer les jetons adverses entre leurs propres jetons.'),
@@ -152,3 +152,37 @@ INSERT INTO Game (game_name, min_players, max_players, game_type, game_rules) VA
 ('Risk', 3, 6, 1, 'Jeu de conquête stratégique où les joueurs luttent pour le contrôle de territoires sur une carte du monde.'),
 ('Scrabble', 2, 4, 0, 'Jeu de lettres où les joueurs utilisent des tuiles de lettres pour former des mots sur une grille pour gagner des points.'),
 ('Dames', 2, 2, 0, 'Jeu de plateau où deux joueurs déplacent leurs pièces diagonalement pour capturer les pièces adverses en sautant par-dessus.');
+
+
+-- TRANSACTIONS
+
+-- This transaction is used to insert a new player into the database, it creates a new user and a new player (linked to the user)
+DELIMITER //
+
+CREATE PROCEDURE CreateUserAndPlayer(
+    IN p_user_name VARCHAR(50),
+    IN p_user_lastname VARCHAR(50),
+    IN p_user_email VARCHAR(100),
+    IN p_user_password VARCHAR(255),
+    IN p_player_bio VARCHAR(50),
+    IN p_avatar MEDIUMBLOB
+)
+BEGIN
+    DECLARE new_user_id INT;
+
+    START TRANSACTION;
+
+    INSERT INTO Users (user_name, user_lastname, user_email, user_password)
+    VALUES (p_user_name, p_user_lastname, p_user_email, p_user_password);
+
+    -- Get the new user's ID
+    SET new_user_id = LAST_INSERT_ID();
+
+    -- Insert into Player table with the new user's ID
+    INSERT INTO Player (user_id, player_bio, avatar, ranking)
+    VALUES (new_user_id, p_player_bio, p_avatar, 0);
+
+    COMMIT;
+END //
+
+DELIMITER ;

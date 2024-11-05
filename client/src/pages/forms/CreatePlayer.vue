@@ -20,7 +20,7 @@
                   <!-- Player Information (Optional) -->
                   <div class="text-h6">A propos de vous (Facultatif)</div>
                   <q-input filled clearable v-model="playerBio" label="Biographie du Joueur" type="textarea" maxlength="2000"/>
-
+                  <input type="file" @change="onFileChange" />
                   <!-- Submit Button -->
                   <q-btn unelevated color="primary" size="lg" class="full-width" label="Créer votre compte" @click="submitForm" />
                 </q-form>
@@ -43,8 +43,12 @@ const password = ref('');
 const playerBio = ref('');
 const avatar = ref(null);
 
-// This method is a basic placeholder for the form submission, it might not work as expected
-const submitForm = () => {
+const onFileChange = (event) => {
+  avatar.value = event.target.files[0];
+};
+
+
+const submitForm = async () => {
   const formData = new FormData();
   formData.append('userName', userName.value);
   formData.append('userLastname', userLastname.value);
@@ -53,14 +57,14 @@ const submitForm = () => {
   formData.append('playerBio', playerBio.value);
   if (avatar.value) formData.append('avatar', avatar.value);
 
-  console.log('Form submitted with:', {
-    userName: userName.value,
-    userLastname: userLastname.value,
-    email: email.value,
-    password: password.value,
-    playerBio: playerBio.value,
-    avatar: avatar.value
-  });
+  try {
+    const response = await axios.post('/api/register', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    console.log('User created with ID:', response.data.userId);
+  } catch (error) {
+    console.error('Failed to create account:', error);
+  }
 };
 </script>
 
