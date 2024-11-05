@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false);
   const userName = ref('');
   const userLastName = ref('');
+  const email = ref('');
   const userRole = ref('');
   const bio = ref('');
   const avatar = ref(null);
@@ -36,6 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
       userName.value = '';
       userLastName.value = '';
       userRole.value = '';
+      email.value = '';
       bio.value = '';
       avatar.value = null;
       ranking.value = null;
@@ -52,6 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
       userName.value = response.data.name;
       userLastName.value = response.data.lastName;
       userRole.value = response.data.role;
+      email.value = response.data.email;
 
       // Additional fields for players
       if (userRole.value === 'Joueur') {
@@ -81,6 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
     bio,
     avatar,
     ranking,
-    fetchUserDetails
+    fetchUserDetails,
+    email
   };
 });

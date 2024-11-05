@@ -8,7 +8,7 @@
           </div>
 
           <q-form class="q-gutter-md">
-            <div class="text-h6 text-primary text-bold">Mettre à jour votre profil</div>
+            <div class="text-h5 text-primary text-bold">Mettre à jour votre profil</div>
 
             <!-- User Information -->
             <div class="row">
@@ -18,7 +18,6 @@
                 clearable
                 v-model="userName"
                 label="Nom"
-                :placeholder="userData.userName"
                 maxlength="50"
               />
               <q-input
@@ -27,10 +26,10 @@
                 clearable
                 v-model="userLastname"
                 label="Prénom"
-                :placeholder="userData.userLastname"
                 maxlength="50"
               />
             </div>
+
             <q-input
               square
               filled
@@ -38,17 +37,12 @@
               v-model="email"
               type="email"
               label="Email"
-              :placeholder="userData.email"
               maxlength="100"
             />
 
-            <q-uploader
-              style="max-width: 300px"
-              label="Avatar"
-              auto-upload
-              accept=".jpg, image/png, image/jpeg"
-              @rejected="onRejected"
-            />
+            <!-- Avatar Upload -->
+            <div class="text-h6 text-primary text-bold"> Mettre à jour l'avatar </div>
+            <input type="file" @change="onFileChange" />
 
             <q-input
               square
@@ -56,7 +50,6 @@
               clearable
               v-model="playerBio"
               label="Biographie du Joueur"
-              :placeholder="userData.playerBio"
               type="textarea"
               maxlength="50"
             />
@@ -72,48 +65,32 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useAuthStore } from 'src/stores/authStore';
 
 const userName = ref('');
 const userLastname = ref('');
 const email = ref('');
 const playerBio = ref('');
-const avatar = ref('placeholder.png');
+const avatar = ref(null);
 
-const uploader = ref(null);
+const authStore = useAuthStore();
 
-const userData = ref({
-  userName: '',
-  userLastname: '',
-  email: '',
-  playerBio: '',
-  avatar: null,
-});
+const fetchUserData = () => {
+  userName.value = authStore.userName;
+  userLastname.value = authStore.userLastName;
+  email.value = authStore.email;
+  playerBio.value = authStore.bio || '';
+  avatar.value = authStore.avatar || 'placeholder.png'; // Use avatar from store or fallback
+};
 
-const fetchUserData = async () => {
-  // Fetch the user's current data from the database and set as placeholders
-  // Simulate a fetch request - replace this with an actual API call
-  const response = await new Promise(resolve =>
-    resolve({
-      userName: 'Jean',
-      userLastname: 'Dupont',
-      email: 'jean.dupont@example.com',
-      playerBio: 'Avid board game player',
-    })
-  );
-
-  userData.value = response;
+const onFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    avatar.value = URL.createObjectURL(file);
+  }
 };
 
 const updateProfile = () => {
-  // Form submission logic to update profile
-  const formData = new FormData();
-  formData.append('userName', userName.value || userData.value.userName);
-  formData.append('userLastname', userLastname.value || userData.value.userLastname);
-  formData.append('email', email.value || userData.value.email);
-  formData.append('playerBio', playerBio.value || userData.value.playerBio);
-  if (avatar.value) formData.append('avatar', avatar.value);
-
-  console.log('Profile updated with:', formData);
   // Send formData to the API for updating the profile
 };
 

@@ -39,22 +39,34 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from 'src/stores/authStore';
+import { useQuasar } from 'quasar';
 
 const email = ref('');
 const password = ref('');
 
 const router = useRouter();
 const authStore = useAuthStore();
+const $q = useQuasar();
+
+// Atempt at display an error message when login fails (not working)
+const triggerLoginError = () => {
+  email.value = '';
+  password.value = '';
+  $q.notify({
+    type: 'negative',
+    message: 'Email ou mot de passe incorrect'
+  });
+}
 
 const loginUser = async () => {
   try {
     await authStore.login(email.value, password.value);
     router.push('/home');
   } catch (error) {
+    triggerLoginError();
     console.error("Login failed", error);
   }
 }
-
 </script>
 
 <style scoped>
