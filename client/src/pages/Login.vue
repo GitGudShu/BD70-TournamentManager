@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-page-container>
-      <q-page class="bg-primary window-height window-width row justify-center items-center">
+      <q-page class=" window-height window-width row justify-center items-center">
         <div class="column">
           <div class="row">
             <div class="logo">

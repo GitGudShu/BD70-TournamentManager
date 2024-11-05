@@ -57,6 +57,9 @@ onMounted(() => {
   width: 70%;
   margin: 1em auto;
   height: 100%;
+  background-color: var(--sad-secondary);
+  border-radius: 1em;
+  padding: 1.5em;
 }
 
 .row {
