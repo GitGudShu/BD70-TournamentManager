@@ -18,14 +18,7 @@
                   <q-separator spaced />
 
                   <!-- Player Information (Optional) -->
-                  <div class="text-h6">Informations supplémentaires (Facultatif)</div>
-                  <q-uploader
-                    style="max-width: 300px"
-                    label="Avatar"
-                    auto-upload
-                    accept=".jpg, image/png, image/jpeg"
-                    @rejected="onRejected"
-                  />
+                  <div class="text-h6">A propos de vous (Facultatif)</div>
                   <q-input filled clearable v-model="playerBio" label="Biographie du Joueur" type="textarea" maxlength="2000"/>
 
                   <!-- Submit Button -->

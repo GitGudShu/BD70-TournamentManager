@@ -1,25 +1,21 @@
 import express from 'express';
+import gameRoutes from './routes/gameRoutes.js';
+
 const app = express();
 
-import { getJeux, getJeu } from './api/database.js';
-
-app.get("/api", (req, res) => {
-    res.json({"users": ["Idiot 1", "Idiot 2", "Idiot 3s"]}); // Test data
+// Home route
+app.get('/api', (req, res) => {
+    res.send('Welcome to the Tournament Library API!');
 });
 
-app.get("/api/get_jeux", async(req, res) => {
-    const games = await getJeux();
-    res.json(games);
-})
-
-app.get("/api/get_jeu/:id", async(req, res) => {
-    const game = await getJeu(req.params.id);
-    res.json(game);
-})
+// Routes
+app.use(gameRoutes); // Game table routes
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
 
-app.listen(5000, () => {console.log("Server is running on port 5000")});
+app.listen(5000, () => {
+    console.log("Server is running on port 5000")
+});
