@@ -10,7 +10,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'your_secret_key', 
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' } 
+    cookie: { secure: false } // For development only
 }));
 
 app.use(express.json()); // JSON body parser

@@ -17,13 +17,13 @@
             <div class="hero-container">
               <q-item clickable v-ripple>
                 <q-item-section side>
-                  <q-avatar rounded size="40px">
-                    <img src="https://ui-avatars.com/api/?name=Thomas+Chu&background=random" alt="hero">
+                  <q-avatar rounded size="50px">
+                    <img :src="userAvatar" alt="user avatar" />
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label class="text-h6 text-accent">Thomas Chu</q-item-label>
-                  <q-item-label caption class="text-caption text-secondary">Administrateur</q-item-label>
+                  <q-item-label class="text-h6 text-accent">{{ fullName }}</q-item-label>
+                  <q-item-label caption class="text-caption text-secondary">{{ userRole }}</q-item-label>
                 </q-item-section>
               </q-item>
             </div>
@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from 'src/stores/authStore';
 
@@ -43,39 +43,22 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const nav_items = [
-  {
-    name: 'ACCUEIL',
-    path: '/home'
-  },
-  {
-    name: 'JEUX',
-    path: '/games',
-  },
-  {
-    name: "TOURNOIS",
-    path: '/tournament',
-  },
-  {
-    name: 'STATISTIQUES',
-    path: '/stats',
-  }
-]
+  { name: 'ACCUEIL', path: '/home' },
+  { name: 'JEUX', path: '/games' },
+  { name: "TOURNOIS", path: '/tournament' },
+  { name: 'STATISTIQUES', path: '/stats' }
+];
 
 const pages = ref(nav_items);
-
 const windowWidth = ref(window.innerWidth)
 
-const updateWindowWidth = () => {
-  windowWidth.value = window.innerWidth;
-}
+const updateWindowWidth = () => { windowWidth.value = window.innerWidth; }
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('resize', updateWindowWidth);
 })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateWindowWidth);
-})
+onBeforeUnmount(() => { window.removeEventListener('resize', updateWindowWidth); })
 
 const logout = async () => {
   try {
@@ -84,6 +67,11 @@ const logout = async () => {
     console.error("Logout failed", error);
   }
 }
+
+// Get user information
+const fullName = computed(() => `${authStore.userName} ${authStore.userLastName}`);
+const userRole = computed(() => authStore.userRole);
+const userAvatar = computed(() => authStore.avatar || "placeholder.png");
 
 </script>
 
