@@ -35,10 +35,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from 'src/stores/authStore';
 
-const router = useRouter()
+const router = useRouter();
+const authStore = useAuthStore();
 
 const nav_items = [
   {
@@ -75,21 +77,9 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', updateWindowWidth);
 })
 
-// Original code (will use later)
-// const logout = async () => {
-//   try {
-//     await api.post('/auth/logout');
-//     localStorage.clear()
-//     router.push("/login");
-//   } catch (error) {
-//     console.error("Logout failed", error);
-//   }
-// }
-
-// Temporary code
 const logout = async () => {
   try {
-    router.push("/login");
+    await authStore.logout();
   } catch (error) {
     console.error("Logout failed", error);
   }

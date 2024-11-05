@@ -58,7 +58,7 @@ onMounted(() => {
   margin: 1em auto;
   height: 100%;
   background-color: var(--sad-secondary);
-  border-radius: 1em;
+  border-radius: .5em;
   padding: 1.5em;
 }
 
