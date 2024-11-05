@@ -1,4 +1,4 @@
-import { getAllGames, getGameById, insertGame } from '../models/gameModel.js';
+import { getAllGames, getGameById } from '../models/gameModel.js';
 
 export async function getGames(req, res) {
     try {
@@ -18,16 +18,5 @@ export async function getGame(req, res) {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to fetch game' });
-    }
-}
-
-export async function createGame(req, res) {
-    try {
-        const { name, min_players, max_players, type, rules } = req.body;
-        const newGameId = await insertGame(name, min_players, max_players, type, rules);
-        res.status(201).json({ id: newGameId });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to create game' });
     }
 }
