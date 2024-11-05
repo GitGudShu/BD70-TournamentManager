@@ -17,7 +17,7 @@
                 </q-form>
               </q-card-section>
               <q-card-actions class="q-px-md">
-                <q-btn unelevated color="primary" size="lg" class="full-width" label="Login" />
+                <q-btn unelevated color="primary" size="lg" class="full-width" label="Se connecter" @click="loginUser" />
               </q-card-actions>
               <q-card-section class="text-center q-pa-none">
                 <p class="text-grey-6">
@@ -37,9 +37,24 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from 'src/stores/authStore';
 
 const email = ref('');
 const password = ref('');
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const loginUser = async () => {
+  try {
+    await authStore.login(email.value, password.value);
+    router.push('/home');
+  } catch (error) {
+    console.error("Login failed", error);
+  }
+}
+
 </script>
 
 <style scoped>

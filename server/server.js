@@ -1,7 +1,19 @@
 import express from 'express';
+import session from 'express-session';
 import gameRoutes from './routes/gameRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 const app = express();
+
+// Session configuration
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your_secret_key', 
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'production' } 
+}));
+
+app.use(express.json()); // JSON body parser
 
 // Home route
 app.get('/api', (req, res) => {
@@ -10,6 +22,7 @@ app.get('/api', (req, res) => {
 
 // Routes
 app.use(gameRoutes); // Game table routes
+app.use(userRoutes); // User table routes
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

@@ -10,7 +10,7 @@
 
       <div class="row">
         <template v-for="game in allGames">
-          <Card :title="game.name" state="En cours..." :content="game.rules"/>
+          <Card :title="game.game_name" state="En cours..." :content="game.game_rules"/>
         </template>
       </div>
 
@@ -28,7 +28,7 @@ const allGames = ref([]);
 
 const fetchGames = async () => {
   try {
-    const response = await api.get('/get_jeux');
+    const response = await api.get('/games');
     allGames.value = response.data;
     console.log(allGames.value);
   } catch (error) {

@@ -34,6 +34,8 @@
 </template>
 
 <script setup>
+import { api } from 'src/boot/axios';
+import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 
 const userName = ref('');
@@ -42,6 +44,8 @@ const email = ref('');
 const password = ref('');
 const playerBio = ref('');
 const avatar = ref(null);
+
+const router = useRouter();
 
 const onFileChange = (event) => {
   avatar.value = event.target.files[0];
@@ -58,10 +62,11 @@ const submitForm = async () => {
   if (avatar.value) formData.append('avatar', avatar.value);
 
   try {
-    const response = await axios.post('/api/register', formData, {
+    const response = await api.post('/register', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
-    console.log('User created with ID:', response.data.userId);
+    console.log('User created.');
+    router.push('/login');
   } catch (error) {
     console.error('Failed to create account:', error);
   }
@@ -70,7 +75,7 @@ const submitForm = async () => {
 
 <style scoped>
 .q-card {
-  width: 500px; /* Wider form */
+  width: 500px;
 }
 
 .logo {

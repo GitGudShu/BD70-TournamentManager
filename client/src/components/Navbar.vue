@@ -54,8 +54,8 @@ const nav_items = [
     path: '/tournament',
   },
   {
-    name: 'MON ESPACE',
-    path: '/space',
+    name: 'STATISTIQUES',
+    path: '/stats',
   }
 ]
 

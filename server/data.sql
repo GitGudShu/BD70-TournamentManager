@@ -6,6 +6,9 @@ CREATE DATABASE tournament_db
 
 USE tournament_db;
 
+-- UTF-8 support
+SET NAMES 'utf8';
+
 DROP TABLE IF EXISTS PlayerMatch;
 DROP TABLE IF EXISTS PlayerTeam;
 DROP TABLE IF EXISTS PlayerGame;
@@ -175,10 +178,8 @@ BEGIN
     INSERT INTO Users (user_name, user_lastname, user_email, user_password)
     VALUES (p_user_name, p_user_lastname, p_user_email, p_user_password);
 
-    -- Get the new user's ID
     SET new_user_id = LAST_INSERT_ID();
 
-    -- Insert into Player table with the new user's ID
     INSERT INTO Player (user_id, player_bio, avatar, ranking)
     VALUES (new_user_id, p_player_bio, p_avatar, 0);
 
@@ -186,3 +187,5 @@ BEGIN
 END //
 
 DELIMITER ;
+
+

@@ -1,16 +1,18 @@
-import MainLayout from 'layouts/MainLayout.vue'
-import Home from 'pages/Home.vue'
-import Login from 'pages/Login.vue'
-import CreatePlayer from 'pages/forms/CreatePlayer.vue'
+import MainLayout from 'layouts/MainLayout.vue';
+import Home from 'pages/Home.vue';
+import Login from 'pages/Login.vue';
+import CreatePlayer from 'pages/forms/CreatePlayer.vue';
+import UpdateProfile from 'pages/forms/UpdateProfile.vue';
 
 const routes = [
   {
     path: '/',
     component: MainLayout,
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
-        redirect: 'home'
+        component: Home
       },
       {
         path: 'home',
@@ -18,7 +20,7 @@ const routes = [
       },
       {
         path: 'update_player',
-        component: () => import('pages/forms/UpdateProfile.vue')
+        component: UpdateProfile
       }
     ]
   },
