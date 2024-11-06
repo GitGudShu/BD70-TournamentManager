@@ -90,8 +90,17 @@ const onFileChange = (event) => {
   }
 };
 
-const updateProfile = () => {
-  // Send formData to the API for updating the profile
+const updateProfile = async () => {
+  const updatedData = {
+    userName: userName.value,
+    userLastname: userLastname.value,
+    email: email.value,
+    playerBio: playerBio.value,
+    avatar: avatar.value instanceof File ? avatar.value : null, // Check if avatar is a new file
+  };
+
+  await authStore.updateProfile(updatedData);
+  console.log('Profile update request sent');
 };
 
 onMounted(fetchUserData);

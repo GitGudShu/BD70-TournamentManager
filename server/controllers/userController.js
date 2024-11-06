@@ -125,3 +125,39 @@ export async function getUserDetails(req, res) {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+export async function updateUserProfile(req, res) {
+    const { userName, userLastname, email, playerBio } = req.body;
+    const avatar = req.file ? req.file.buffer : null;
+    const userId = req.session.userId;
+  
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+  
+    try {
+      const queries = [];
+      const values = [];
+
+      console.log('Updating profile for user ID:', userId);
+  
+      queries.push('UPDATE Users SET user_name = ?, user_lastname = ?, user_email = ? WHERE user_id = ?');
+      values.push(userName, userLastname, email, userId);
+  
+      await pool.query(queries.join('; '), values);
+  
+      // Update player details if bio or avatar is present
+      if (playerBio || avatar) {
+        const playerQuery = 'UPDATE Player SET player_bio = ?, avatar = ? WHERE user_id = ?';
+        await pool.query(playerQuery, [playerBio, avatar, userId]);
+      }
+
+      console.log('Profile updated with fields:', { userName, userLastname, email, playerBio });
+  
+      res.json({ message: 'Profile updated successfully' });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      res.status(500).json({ message: 'Failed to update profile' });
+    }
+  }
+  

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/axios'; // Use the configured Axios instance
+import { api } from 'src/boot/axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -74,6 +74,36 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  const updateProfile = async (updatedData) => {
+    try {
+      const formData = new FormData();
+      formData.append('userName', updatedData.userName);
+      formData.append('userLastname', updatedData.userLastname);
+      formData.append('email', updatedData.email);
+      formData.append('playerBio', updatedData.playerBio || '');
+      if (updatedData.avatar) {
+        formData.append('avatar', updatedData.avatar);
+      }
+
+      const response = await api.put('/user/update', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Update the store with the new details if the update was successful
+      userName.value = updatedData.userName;
+      userLastName.value = updatedData.userLastname;
+      email.value = updatedData.email;
+      bio.value = updatedData.playerBio || '';
+      avatar.value = updatedData.avatar ? URL.createObjectURL(updatedData.avatar) : avatar.value;
+
+      console.log('Profile updated successfully:', response.data);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
+  };
+
   return {
     isAuthenticated,
     login,
@@ -85,6 +115,7 @@ export const useAuthStore = defineStore('auth', () => {
     avatar,
     ranking,
     fetchUserDetails,
+    updateProfile,
     email
   };
 });

@@ -1,9 +1,24 @@
 import express from 'express';
 import session from 'express-session';
+import cors from 'cors';
+
 import gameRoutes from './routes/gameRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 const app = express();
+
+// Manually handle CORS to ensure preflight requests work (worst thing ever)
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:9000");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
+    next();
+});
 
 // Session configuration
 app.use(session({
