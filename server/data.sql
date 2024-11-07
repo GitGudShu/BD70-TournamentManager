@@ -9,18 +9,18 @@ USE tournament_db;
 -- UTF-8 support
 SET NAMES 'utf8';
 
+DROP TABLE IF EXISTS TeamMatch;
 DROP TABLE IF EXISTS PlayerMatch;
 DROP TABLE IF EXISTS PlayerTeam;
 DROP TABLE IF EXISTS PlayerGame;
-DROP TABLE IF EXISTS MatchTree;
+DROP TABLE IF EXISTS TournamentRound;
 DROP TABLE IF EXISTS Reward;
-DROP TABLE IF EXISTS Ranking;
 DROP TABLE IF EXISTS Matchmaking;
-DROP TABLE IF EXISTS Tournament;
 DROP TABLE IF EXISTS Team;
-DROP TABLE IF EXISTS Player;
-DROP TABLE IF EXISTS Organizer;
+DROP TABLE IF EXISTS Tournament;
 DROP TABLE IF EXISTS Game;
+DROP TABLE IF EXISTS Organizer;
+DROP TABLE IF EXISTS Player;
 DROP TABLE IF EXISTS Users;
 
 CREATE TABLE Users (
@@ -70,28 +70,14 @@ CREATE TABLE Tournament (
 
 CREATE TABLE Team (
     team_id INT AUTO_INCREMENT PRIMARY KEY,
-    team_name VARCHAR(50),
-    ranking INT
+    team_name VARCHAR(50)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
 CREATE TABLE Matchmaking (
     match_id INT AUTO_INCREMENT PRIMARY KEY,
     match_date VARCHAR(50),
-    round INT,
     location VARCHAR(50),
     status TINYINT,
-    tournament_id INT,
-    FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
-
-CREATE TABLE Ranking (
-    ranking_id INT AUTO_INCREMENT PRIMARY KEY,
-    rank_position INT,
-    player_id INT,
-    team_id INT,
-    tournament_id INT,
-    FOREIGN KEY (player_id) REFERENCES Player(player_id),
-    FOREIGN KEY (team_id) REFERENCES Team(team_id),
     FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
@@ -99,20 +85,18 @@ CREATE TABLE Reward (
     reward_id INT AUTO_INCREMENT PRIMARY KEY,
     reward_name VARCHAR(100),
     reward_description TEXT,
-    ranking_id INT,
+    tournament_id INT NOT NULL,
     FOREIGN KEY (ranking_id) REFERENCES Ranking(ranking_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
-CREATE TABLE MatchTree (
-    matchTree_id VARCHAR(50),
+CREATE TABLE TournamentRound (
+    tournamentRound_id VARCHAR(50),
     round INT,
-    match_id INT,
-    tournament_id INT,
-    match_id_1 INT,
-    PRIMARY KEY (matchTree_id),
+    match_id INT NOT NULL,
+    tournament_id INT NOT NULL,
+    PRIMARY KEY (tournamentRound_id),
     FOREIGN KEY (match_id) REFERENCES Matchmaking(match_id),
     FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id),
-    FOREIGN KEY (match_id_1) REFERENCES Matchmaking(match_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
 CREATE TABLE PlayerGame (
@@ -133,14 +117,22 @@ CREATE TABLE PlayerTeam (
 
 CREATE TABLE PlayerMatch (
     player_id INT,
-    team_id INT,
     match_id INT,
     score INT,
     status INT,
-    PRIMARY KEY (player_id, team_id, match_id),
+    PRIMARY KEY (player_id, match_id),
     FOREIGN KEY (player_id) REFERENCES Player(player_id),
-    FOREIGN KEY (team_id) REFERENCES Team(team_id),
     FOREIGN KEY (match_id) REFERENCES Matchmaking(match_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
+
+CREATE TABLE TeamMatch(
+   team_id INT,
+   match_id INT,
+   score INT,
+   status INT,
+   PRIMARY KEY(team_id, match_id),
+   FOREIGN KEY(team_id) REFERENCES Team(team_id),
+   FOREIGN KEY(match_id) REFERENCES Matchmaking(match_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
 -- INITIAL INSERTS
