@@ -77,8 +77,7 @@ CREATE TABLE Matchmaking (
     match_id INT AUTO_INCREMENT PRIMARY KEY,
     match_date VARCHAR(50),
     location VARCHAR(50),
-    status TINYINT,
-    FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id)
+    status TINYINT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
 CREATE TABLE Reward (
@@ -86,7 +85,7 @@ CREATE TABLE Reward (
     reward_name VARCHAR(100),
     reward_description TEXT,
     tournament_id INT NOT NULL,
-    FOREIGN KEY (ranking_id) REFERENCES Ranking(ranking_id)
+    FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
 CREATE TABLE TournamentRound (
@@ -96,7 +95,7 @@ CREATE TABLE TournamentRound (
     tournament_id INT NOT NULL,
     PRIMARY KEY (tournamentRound_id),
     FOREIGN KEY (match_id) REFERENCES Matchmaking(match_id),
-    FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id),
+    FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
 CREATE TABLE PlayerGame (
