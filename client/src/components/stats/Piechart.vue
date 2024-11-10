@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { onMounted, nextTick, ref, watch } from 'vue';
+import { onMounted, nextTick, ref, watch, onBeforeUnmount } from 'vue';
 import ApexCharts from 'apexcharts';
 
 const chartRef = ref(null);
@@ -65,14 +65,21 @@ const renderChart = () => {
   chartInstance.value.render();
 };
 
-// Use onMounted to call renderChart after DOM is fully updated
 onMounted(() => {
   nextTick(() => {
     renderChart();
   });
 });
 
-// Optional: Watch for prop changes to update the chart
+onBeforeUnmount(() => {
+  if (chartInstance.value) {
+    chartInstance.value.destroy();
+    chartInstance.value = null;
+    console.log('Chart instance destroyed.');
+  }
+});
+
+// Watch for prop changes to update the chart
 watch(() => [props.series, props.labels, props.image_paths], ([newSeries, newLabels, newImagePaths]) => {
   if (newSeries.length && newLabels.length && newImagePaths.length) {
     renderChart();
