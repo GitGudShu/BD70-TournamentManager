@@ -36,6 +36,10 @@ export async function loginUser(req, res) {
             return res.status(401).json({ message: 'User not found' });
         }
 
+        // Log password match
+        console.log('User found:', user);
+        console.log('Password provided:', password);
+        console.log('Real password:', user.user_password);
         const passwordMatch = await bcrypt.compare(password, user.user_password);
         console.log('Password match:', passwordMatch);
 
@@ -46,8 +50,7 @@ export async function loginUser(req, res) {
 
         // Create session
         req.session.userId = user.user_id;
-        req.session.userRole = user.user_role;
-        console.log(`Login successful for user ID: ${user.user_id}, role: ${user.user_role}`);
+        console.log(`Login successful for user ID: ${user.user_id}`);
 
         res.json({ message: 'Login successful' });
     } catch (error) {

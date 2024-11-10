@@ -147,6 +147,11 @@ INSERT INTO Game (game_name, min_players, max_players, game_type, game_rules) VA
 ('Scrabble', 2, 4, 0, 'Jeu de lettres où les joueurs utilisent des tuiles de lettres pour former des mots sur une grille pour gagner des points.'),
 ('Dames', 2, 2, 0, 'Jeu de plateau où deux joueurs déplacent leurs pièces diagonalement pour capturer les pièces adverses en sautant par-dessus.');
 
+-- ADMINISTRATOR ACCOUNT
+INSERT INTO Users (user_name, user_lastname, user_email, user_password) VALUES
+('Jean', 'Admin', 'admin@example.com', '$2b$10$5nHegeYB/uFrSpGqbHleteyI06E3ixBlc7zBGdmSPLUoUHdFRPtFC');
+INSERT INTO Organizer (organization_name, user_id) VALUES
+('Board Game Master Federation', 1);
 
 -- TRANSACTIONS
 
