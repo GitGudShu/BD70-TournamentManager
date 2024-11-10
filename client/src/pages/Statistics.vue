@@ -2,17 +2,11 @@
   <q-page>
     <div class="wrapper">
 
-      <!-- Here's an example of how you can use the cards :) -->
-      <!-- <div class="row">
-        <Card title="Card 1" state="En cours..." />
-        <Card title="Card 1" state="En cours..." />
-      </div> -->
-
-      <div class="row">
-        <template v-for="game in allGames">
-          <Card :title="game.game_name" state="En cours..." :content="game.game_rules"/>
-        </template>
-      </div>
+      <PieChart
+        :series="mostPlayedGames.map(game => game.plays)"
+        :labels="mostPlayedGames.map(game => game.name)"
+        :image_paths="mostPlayedGames.map(game => game.image_path)"
+      />
 
     </div>
   </q-page>
@@ -20,25 +14,28 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
+import PieChart from 'src/components/stats/Piechart.vue';
 import { api } from 'src/boot/axios';
-import Card from 'src/components/Card.vue';
 
+const mostPlayedGames = ref([]);
 
-const allGames = ref([]);
-
-const fetchGames = async () => {
+const fetchMostPlayedGames = async () => {
   try {
-    const response = await api.get('/games');
-    allGames.value = response.data;
-    console.log(allGames.value);
+    // Test data
+    mostPlayedGames.value = [
+      { name: 'Go', plays: 44, image_path: 'games/go.jpg' },
+      { name: 'Chess', plays: 33, image_path: 'games/chess.jpg' },
+      { name: 'Draughts', plays: 54, image_path: 'games/draughts.jpg' },
+      { name: 'Shogi', plays: 45, image_path: 'games/shogi.jpg' }
+    ];
   } catch (error) {
-    console.error("Fetch games failed", error);
+    console.error("Fetch failed", error);
   }
 }
 
 onMounted(() => {
   try {
-    fetchGames();
+    fetchMostPlayedGames();
   }
   catch (error) {
     console.log(error);
