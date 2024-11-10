@@ -8,12 +8,6 @@
         <TournamentTree name="Tournoi de test" :rounds="testRounds"/>
       </div>
 
-      <div class="row">
-        <template v-for="game in allGames">
-          <Card :title="game.game_name" state="En cours..." :content="game.game_rules"/>
-        </template>
-      </div>
-
     </div>
   </q-page>
 </template>
@@ -21,7 +15,6 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
-import Card from 'src/components/Card.vue';
 import TournamentTree from 'src/components/TournamentTree.vue';
 
 const allGames = ref([]);
@@ -85,19 +78,9 @@ const testRounds = [
   },
 ];
 
-const fetchGames = async () => {
-  try {
-    const response = await api.get('/games');
-    allGames.value = response.data;
-    console.log(allGames.value);
-  } catch (error) {
-    console.error("Fetch games failed", error);
-  }
-}
-
 onMounted(() => {
   try {
-    fetchGames();
+    // fetch something
   }
   catch (error) {
     console.log(error);
