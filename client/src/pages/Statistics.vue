@@ -2,12 +2,14 @@
   <q-page>
     <div class="wrapper">
 
+      <div class="text-h5 graph-title text-bold">Pie chart test</div>
       <PieChart
         :series="mostPlayedGames.map(game => game.plays)"
         :labels="mostPlayedGames.map(game => game.name)"
         :image_paths="mostPlayedGames.map(game => game.image_path)"
       />
 
+      <div class="text-h5 graph-title text-bold">Group chart test</div>
       <MixChart
         :series="playerStats"
         :categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']"
@@ -50,6 +52,11 @@ const fetchPlayerParticipationNPerformance = async () => {
         name: 'Matches Played',
         type: 'column',
         data: [5, 8, 7, 10, 12, 9, 11, 14],
+      },
+      {
+        name: 'Win Rate',
+        type: 'column',
+        data: [55, 60, 65, 68, 72, 75, 78, 80],
       },
       {
         name: 'Win Rate',
@@ -98,6 +105,10 @@ onMounted(() => {
   gap: 1em;
   justify-content: space-evenly;
   align-items: center;
+}
+
+.graph-title {
+  margin-left: 1em;
 }
 
 </style>
