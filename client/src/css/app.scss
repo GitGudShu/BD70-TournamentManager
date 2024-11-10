@@ -1,5 +1,6 @@
 // app global css in SCSS form
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&display=swap");
 :root {
   --sad-orange: #FFCA4B;
   --sad-nightblue: #585068;
@@ -13,7 +14,7 @@
   --sad-yellow: #fed330;
   --body-bg: #f4edff;
 
-  font-family: "Roboto", sans-serif;
+  font-family: "Cabin Sketch", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -34,4 +35,5 @@ body {
   background-color: var(--body-bg);
   background-size: 50%;
   margin: 0;
+  font-family: 'Cabin Sketch', cursive;
 }
