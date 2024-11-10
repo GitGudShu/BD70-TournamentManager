@@ -8,14 +8,12 @@ import { createPinia } from 'pinia'
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
+
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
   withCredentials: true, // We have to ensure cookies are sent with requests,
   headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Z-Key',
-    'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, OPTIONS'
+    'Content-Type': 'application/json'
   }
 })
 

@@ -5,6 +5,7 @@ import CreatePlayer from 'pages/forms/CreatePlayer.vue';
 import UpdateProfile from 'pages/forms/UpdateProfile.vue';
 import Statistics from 'src/pages/Statistics.vue';
 import Tournament from 'src/pages/Tournament.vue';
+import CreateTournament from 'pages/forms/CreateTournament.vue';
 import Match from 'src/pages/Match.vue';
 
 const routes = [
@@ -36,6 +37,10 @@ const routes = [
       {
         path: 'match',
         component: Match
+      },
+      {
+        path: 'create_tournament',
+        component: CreateTournament
       }
     ]
   },

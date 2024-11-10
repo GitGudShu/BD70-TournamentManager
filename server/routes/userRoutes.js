@@ -10,7 +10,6 @@ router.post('/api/login', loginUser);
 router.post('/api/logout', logoutUser);
 
 router.get('/api/user/details', getUserDetails);
-
 router.put('/api/user/update', upload.single('avatar'), updateUserProfile);
 
 export default router;
