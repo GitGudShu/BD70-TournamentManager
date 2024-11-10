@@ -3,6 +3,9 @@ import Home from 'pages/Home.vue';
 import Login from 'pages/Login.vue';
 import CreatePlayer from 'pages/forms/CreatePlayer.vue';
 import UpdateProfile from 'pages/forms/UpdateProfile.vue';
+import Statistics from 'src/pages/Statistics.vue';
+import Tournament from 'src/pages/Tournament.vue';
+import Match from 'src/pages/Match.vue';
 
 const routes = [
   {
@@ -21,6 +24,18 @@ const routes = [
       {
         path: 'update_player',
         component: UpdateProfile
+      },
+      {
+        path: 'stats',
+        component: Statistics
+      },
+      {
+        path: 'tournament',
+        component: Tournament
+      },
+      {
+        path: 'match',
+        component: Match
       }
     ]
   },
