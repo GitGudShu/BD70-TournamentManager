@@ -13,9 +13,9 @@ DROP TABLE IF EXISTS TeamMatch;
 DROP TABLE IF EXISTS PlayerMatch;
 DROP TABLE IF EXISTS PlayerTeam;
 DROP TABLE IF EXISTS PlayerGame;
-DROP TABLE IF EXISTS TournamentRound;
 DROP TABLE IF EXISTS Reward;
 DROP TABLE IF EXISTS Matchmaking;
+DROP TABLE IF EXISTS TournamentRound;
 DROP TABLE IF EXISTS Team;
 DROP TABLE IF EXISTS Tournament;
 DROP TABLE IF EXISTS Game;
@@ -62,6 +62,7 @@ CREATE TABLE Tournament (
     tournament_type TINYINT,
     start_date DATE,
     end_date DATE,
+    playoffTeams INT,
     game_id INT,
     organizer_id INT,
     FOREIGN KEY (game_id) REFERENCES Game(game_id),
@@ -73,11 +74,23 @@ CREATE TABLE Team (
     team_name VARCHAR(50)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
+
+CREATE TABLE TournamentRound (
+    tournamentRound_id VARCHAR(50),
+    round INT,
+    section INT,
+    tournament_id INT NOT NULL,
+    PRIMARY KEY (tournamentRound_id),
+    FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
+
 CREATE TABLE Matchmaking (
     match_id INT AUTO_INCREMENT PRIMARY KEY,
     match_date VARCHAR(50),
     location VARCHAR(50),
-    status TINYINT
+    status TINYINT,
+    tournamentRound_id VARCHAR(50) NOT NULL,
+    FOREIGN KEY(tournamentRound_id) REFERENCES TournamentRound(tournamentRound_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
 CREATE TABLE Reward (
@@ -85,16 +98,6 @@ CREATE TABLE Reward (
     reward_name VARCHAR(100),
     reward_description TEXT,
     tournament_id INT NOT NULL,
-    FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
-
-CREATE TABLE TournamentRound (
-    tournamentRound_id VARCHAR(50),
-    round INT,
-    match_id INT NOT NULL,
-    tournament_id INT NOT NULL,
-    PRIMARY KEY (tournamentRound_id),
-    FOREIGN KEY (match_id) REFERENCES Matchmaking(match_id),
     FOREIGN KEY (tournament_id) REFERENCES Tournament(tournament_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 

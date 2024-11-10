@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import gameRoutes from './routes/gameRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import tournamentRoutes from './routes/tournamentRoutes.js';  
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.get('/api', (req, res) => {
 // Routes
 app.use(gameRoutes); // Game table routes
 app.use(userRoutes); // User table routes
+app.use(tournamentRoutes);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
