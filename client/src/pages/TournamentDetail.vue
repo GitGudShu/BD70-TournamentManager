@@ -88,6 +88,7 @@ const fetchTournamentDetails = async () => {
     try {
         const response = await api.get(`/getTournaments/${tournamentId}`);
         tournament.value = response.data;
+        console.log("Fetched Tournament:", tournament.value);
     } catch (error) {
         console.error("Failed to fetch tournament details:", error);
     }

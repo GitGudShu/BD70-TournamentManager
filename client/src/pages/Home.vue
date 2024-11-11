@@ -63,7 +63,7 @@ const fetchGames = async () => {
   try {
     const response = await api.get('/games');
     allGames.value = response.data;
-    console.log(allGames.value);
+    // console.log(allGames.value);
   } catch (error) {
     console.error("Fetch games failed", error);
   }

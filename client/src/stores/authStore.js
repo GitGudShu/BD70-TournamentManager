@@ -68,7 +68,7 @@ export const useAuthStore = defineStore('auth', () => {
         ranking.value = null;
       }
 
-      console.log('User details fetched:', response.data);
+      // console.log('User details fetched:', response.data);
     } catch (error) {
       console.error('Failed to fetch user details:', error);
     }
