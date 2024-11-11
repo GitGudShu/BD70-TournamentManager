@@ -11,7 +11,7 @@ export const handleCreateTournament = async (req, res) => {
         const tournamentId = await createTournament(tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id);
         if (tournamentId) {   
             if (tournament_type === 1) {
-                console.log("Nombre de participants au tournoi : ", req.body.nb_participants);
+                console.log("Nombre de participants au tournoi: ", req.body.nb_participants);
                 await generateTournamentRounds(tournamentId, nb_participants);
             }
             res.status(201).json({ message: 'Tournoi créé avec succès', tournamentId });
