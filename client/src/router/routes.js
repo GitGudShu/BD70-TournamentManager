@@ -4,7 +4,7 @@ import Login from 'pages/Login.vue';
 import CreatePlayer from 'pages/forms/CreatePlayer.vue';
 import UpdateProfile from 'pages/forms/UpdateProfile.vue';
 import Statistics from 'src/pages/Statistics.vue';
-import Tournament from 'src/pages/Tournament.vue';
+import Tournament from 'src/pages/TournamentList.vue';
 import CreateTournament from 'pages/forms/CreateTournament.vue';
 import Match from 'src/pages/Match.vue';
 

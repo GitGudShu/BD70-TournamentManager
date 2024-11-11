@@ -1,5 +1,9 @@
 import pool from '../config/database.js';
-import { v4 as uuidv4 } from 'uuid';
+
+export async function getAllTournaments() {
+    const [rows] = await pool.query('SELECT * FROM Tournament');
+    return rows;
+}
 
 export const createTournament = async (tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id) => {
     try {

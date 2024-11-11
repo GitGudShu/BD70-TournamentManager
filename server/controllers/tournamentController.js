@@ -1,4 +1,15 @@
 import { createTournament, generateTournamentRounds } from '../models/tournamentModel.js';
+import { getAllTournaments } from '../models/tournamentModel.js';
+
+export async function getTournaments(req, res) {
+    try {
+        const tournaments = await getAllTournaments();
+        res.json(tournaments);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch tournaments' });
+    }
+}
 
 export const handleCreateTournament = async (req, res) => {
     const { tournament_name, tournament_type, start_date, end_date, playoffTeams, game_id, organizer_id, nb_participants } = req.body;
