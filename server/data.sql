@@ -62,6 +62,7 @@ CREATE TABLE Tournament (
     tournament_type TINYINT,
     start_date DATE,
     end_date DATE,
+    nb_participants INT,
     playoffTeams INT,
     game_id INT,
     organizer_id INT,
@@ -76,7 +77,7 @@ CREATE TABLE Team (
 
 
 CREATE TABLE TournamentRound (
-    tournamentRound_id VARCHAR(50),
+    tournamentRound_id INT AUTO_INCREMENT,
     round INT,
     section INT,
     tournament_id INT NOT NULL,
@@ -89,7 +90,7 @@ CREATE TABLE Matchmaking (
     match_date VARCHAR(50),
     location VARCHAR(50),
     status TINYINT,
-    tournamentRound_id VARCHAR(50) NOT NULL,
+    tournamentRound_id INT NOT NULL,
     FOREIGN KEY(tournamentRound_id) REFERENCES TournamentRound(tournamentRound_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 

@@ -136,6 +136,7 @@ const createTournament = async () => {
     tournament_type: selectedTournamentType.value.value,
     start_date: startDate.value,
     end_date: endDate.value,
+    nb_participants : participantCount.value,
     playoffTeams: playoffTeams.value || null, 
     game_id: selectedGame.value.value,
     organizer_id: 1, 
