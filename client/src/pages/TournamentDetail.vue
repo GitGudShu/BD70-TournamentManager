@@ -1,43 +1,43 @@
 <template>
 <q-page>
-    <div class="wrapper">
+  <div class="wrapper">
     <div class="text-h3 text-center">Détails du tournoi</div>
 
     <div v-if="tournament" class="q-mb-md">
-        <div class="text-h6">{{ tournament.tournament_name }}</div>
-        <div class="text-subtitle1">
+      <div class="text-h6">{{ tournament.tournament_name }}</div>
+      <div class="text-subtitle1">
         Type : {{ getTournamentType(tournament.tournament_type) }}<br />
         Date de début : {{ tournament.start_date }}<br />
         Date de fin : {{ tournament.end_date }}<br />
         Nombre de participants : {{ tournament.nb_participants }}<br />
         Nombre d'équipes en playoff : {{ tournament.playoffTeams }}<br />
-        </div>
+      </div>
 
-
-        <div v-for="round in tournament.rounds" :key="round.tournamentRound_id">
+      <div v-for="round in tournament.rounds" :key="round.tournamentRound_id">
         <div class="text-h6">{{ getRoundName(round.round, tournament.rounds.length) }} - Section {{ round.section }}</div>
 
         <div v-if="round.matches.length > 0">
-            <div v-for="match in round.matches" :key="match.match_id" class="q-mb-md">
-            <q-card>
-                <q-card-section>
-                <div class="text-h6">Match ID: {{ match.match_id }}</div>
-                <div>Date : {{ match.match_date }}</div>
-                <div>Location : {{ match.location }}</div>
-                <div>Status : {{ match.status }}</div>
-                </q-card-section>
-            </q-card>
-            </div>
+          <div v-for="match in round.matches" :key="match.match_id" class="q-mb-md">
+          <q-card>
+              <q-card-section>
+              <div class="text-h6">Match ID: {{ match.match_id }}</div>
+              <div>Date : {{ match.match_date }}</div>
+              <div>Location : {{ match.location }}</div>
+              <div>Status : {{ match.status }}</div>
+              </q-card-section>
+          </q-card>
+          </div>
         </div>
+
         <div v-else>
             <div class="text-body1">Aucun match pour ce round.</div>
         </div>
-        </div>
+      </div> <!-- end of v-for -->
     </div>
     <div v-else>
         <q-spinner color="primary" />
     </div>
-    </div>
+  </div>
 </q-page>
 </template>
 
@@ -73,7 +73,7 @@ const getRoundName = (roundNumber, totalRounds) => {
     } else if (participantsInThisRound === 2) {
         return "Finale";
     } else {
-        return `Round ${roundNumber}`; 
+        return `Round ${roundNumber}`;
     }
 };
 
@@ -127,4 +127,4 @@ gap: 1em;
 justify-content: space-evenly;
 align-items: center;
 }
-</style>  
+</style>
