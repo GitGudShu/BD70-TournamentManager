@@ -5,6 +5,46 @@ export async function getAllTournaments() {
     return rows;
 }
 
+export async function getTournamentDetails(tournamentId) {
+    try {
+        const tournamentQuery = `
+            SELECT * FROM Tournament
+            WHERE tournament_id = ?
+        `;
+        const [tournamentRows] = await pool.query(tournamentQuery, [tournamentId]);
+
+        if (tournamentRows.length === 0) {
+            throw new Error('Tournament not found');
+        }
+
+        const tournament = tournamentRows[0];
+
+        const roundsQuery = `
+            SELECT * FROM TournamentRound
+            WHERE tournament_id = ?
+        `;
+        const [roundsRows] = await pool.query(roundsQuery, [tournamentId]);
+
+        const roundsWithMatches = await Promise.all(
+            roundsRows.map(async (round) => {
+                const matchesQuery = `
+                    SELECT * FROM Matchmaking
+                    WHERE tournamentRound_id = ?
+                `;
+                const [matchesRows] = await pool.query(matchesQuery, [round.tournamentRound_id]);
+                round.matches = matchesRows;
+                return round;
+            })
+        );
+
+        tournament.rounds = roundsWithMatches;
+        return tournament;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Error fetching tournament details');
+    }
+}
+
 export const createTournament = async (tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id) => {
     try {
         const query = `

@@ -7,6 +7,8 @@ import Statistics from 'src/pages/Statistics.vue';
 import Tournament from 'src/pages/TournamentList.vue';
 import CreateTournament from 'pages/forms/CreateTournament.vue';
 import Match from 'src/pages/Match.vue';
+import TournamentDetails from 'src/pages/TournamentDetail.vue'; 
+
 
 const routes = [
   {
@@ -41,6 +43,11 @@ const routes = [
       {
         path: 'create_tournament',
         component: CreateTournament
+      },
+      {
+        path: 'tournament/:tournamentId',
+        component: TournamentDetails,     
+        props: true        
       }
     ]
   },

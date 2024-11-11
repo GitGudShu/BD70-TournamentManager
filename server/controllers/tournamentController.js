@@ -1,5 +1,6 @@
 import { createTournament, generateTournamentRounds } from '../models/tournamentModel.js';
 import { getAllTournaments } from '../models/tournamentModel.js';
+import { getTournamentDetails } from '../models/tournamentModel.js';
 
 export async function getTournaments(req, res) {
     try {
@@ -8,6 +9,18 @@ export async function getTournaments(req, res) {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to fetch tournaments' });
+    }
+}
+
+export async function getTournamentDetailById(req, res) {
+    const tournamentId = req.params.tournamentId;
+
+    try {
+        const tournament = await getTournamentDetails(tournamentId);
+        res.json(tournament);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch tournament details' });
     }
 }
 

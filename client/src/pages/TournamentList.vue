@@ -31,8 +31,7 @@
                   <strong>Status:</strong> {{ getTournamentState(tournament.start_date, tournament.end_date) }}
                 </div>
               </q-card-section>
-  
-              <!-- Bouton pour rediriger vers la page des détails -->
+
               <q-card-actions>
                 <q-btn 
                   flat 
@@ -84,16 +83,15 @@
     return "En cours";
   };
   
-  // Fonction pour obtenir le label du type de tournoi à partir de son ID
   const getTournamentType = (typeId) => {
     const type = tournamentTypes.find(t => t.value === typeId);
     return type ? type.label : 'Type inconnu';
   };
   
-  // Fonction pour rediriger vers la page des détails du tournoi
   const goToTournamentDetails = (tournamentId) => {
-    router.push({ name: 'TournamentDetails', params: { id: tournamentId } });
-  };
+    console.log(tournamentId)
+    router.push(`/tournament/${tournamentId}`);
+};
   
   onMounted(() => {
     fetchTournaments();
