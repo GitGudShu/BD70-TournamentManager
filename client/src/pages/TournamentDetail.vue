@@ -13,7 +13,14 @@
         Nombre d'équipes en playoff : {{ tournament.playoffTeams }}<br />
       </div>
 
-      <div v-for="round in tournament.rounds" :key="round.tournamentRound_id">
+      <TournamentTreeEdit
+        v-if="tournament && tournament.rounds"
+        :name="tournament.tournament_name"
+        :rounds="tournament.rounds"
+      />
+
+
+      <!-- <div v-for="round in tournament.rounds" :key="round.tournamentRound_id">
         <div class="text-h6">{{ getRoundName(round.round, tournament.rounds.length) }} - Section {{ round.section }}</div>
 
         <div v-if="round.matches.length > 0">
@@ -32,7 +39,8 @@
         <div v-else>
             <div class="text-body1">Aucun match pour ce round.</div>
         </div>
-      </div> <!-- end of v-for -->
+      </div> -->
+
     </div>
     <div v-else>
         <q-spinner color="primary" />
@@ -45,6 +53,7 @@
 import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
+import TournamentTreeEdit from 'src/components/TournamentTreeEdit.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -89,6 +98,7 @@ const fetchTournamentDetails = async () => {
         const response = await api.get(`/getTournaments/${tournamentId}`);
         tournament.value = response.data;
         console.log("Fetched Tournament:", tournament.value);
+        console.log("Rounds:", tournament.value.rounds);
     } catch (error) {
         console.error("Failed to fetch tournament details:", error);
     }
