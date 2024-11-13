@@ -78,7 +78,7 @@ CREATE TABLE Team (
 
 CREATE TABLE TournamentRound (
     tournamentRound_id INT AUTO_INCREMENT,
-    round INT,
+    round VARCHAR(50),
     section INT,
     tournament_id INT NOT NULL,
     PRIMARY KEY (tournamentRound_id),
@@ -188,4 +188,71 @@ END //
 
 DELIMITER ;
 
+-- This transaction create a tournament 
+DELIMITER //
 
+CREATE PROCEDURE CreateTournament(
+    IN p_tournament_name VARCHAR(100),
+    IN p_tournament_type VARCHAR(50),
+    IN p_start_date DATE,
+    IN p_end_date DATE,
+    IN p_nb_participants INT,
+    IN p_playoffTeams INT,
+    IN p_game_id INT,
+    IN p_organizer_id INT,
+    OUT new_tournament_id INT
+)
+BEGIN
+    INSERT INTO Tournament (tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id)
+    VALUES (p_tournament_name, p_tournament_type, p_start_date, p_end_date, p_nb_participants, p_playoffTeams, p_game_id, p_organizer_id);
+    
+    SET new_tournament_id = LAST_INSERT_ID();
+END //
+
+DELIMITER ;
+
+-- This transaction create round and match for TournamentType1
+DELIMITER //
+
+CREATE PROCEDURE GenerateTournamentRoundsForType1(
+    IN p_tournament_id INT,
+    IN p_participant_count INT
+)
+BEGIN
+    -- Déclarer toutes les variables en haut du bloc
+    DECLARE totalRounds INT;
+    DECLARE currentMatchCount INT;
+    DECLARE round INT DEFAULT 1;
+    DECLARE new_round_id INT;
+    DECLARE match_count INT;
+
+    -- Calculer le nombre total de rounds nécessaires
+    SET totalRounds = LOG2(p_participant_count);
+    SET currentMatchCount = p_participant_count / 2;
+
+    -- Boucle pour insérer les rounds et les matchs
+    WHILE round <= totalRounds DO
+        -- Insérer un round
+        INSERT INTO TournamentRound (round, section, tournament_id)
+        VALUES (round, 1, p_tournament_id);
+        
+        -- Obtenir l'ID du round inséré
+        SET new_round_id = LAST_INSERT_ID();
+
+        -- Initialiser la variable match_count pour chaque round
+        SET match_count = 1;
+        
+        -- Boucle pour insérer les matchs pour chaque round
+        WHILE match_count <= currentMatchCount DO
+            INSERT INTO Matchmaking (match_date, location, status, tournamentRound_id)
+            VALUES (NULL, NULL, 0, new_round_id);
+            SET match_count = match_count + 1;
+        END WHILE;
+
+        -- Diviser par 2 le nombre de matchs pour le round suivant
+        SET currentMatchCount = currentMatchCount / 2;
+        SET round = round + 1;
+    END WHILE;
+END //
+
+DELIMITER ;

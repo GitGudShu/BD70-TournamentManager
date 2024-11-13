@@ -1,4 +1,11 @@
-import { createTournament, generateTournamentRounds } from '../models/tournamentModel.js';
+import { createTournament } from '../models/tournamentModel.js';
+import { generateTournamentRoundsForType1 } from '../models/tournamentModel.js';
+import { generateTournamentRoundsForType2 } from '../models/tournamentModel.js';
+import { generateTournamentRoundsForType3 } from '../models/tournamentModel.js';
+import { generateTournamentRoundsForType4 } from '../models/tournamentModel.js';
+import { generateTournamentRoundsForType5 } from '../models/tournamentModel.js';
+import { generateTournamentRoundsForType6 } from '../models/tournamentModel.js';
+
 import { getAllTournaments } from '../models/tournamentModel.js';
 import { getTournamentDetails } from '../models/tournamentModel.js';
 
@@ -34,10 +41,41 @@ export const handleCreateTournament = async (req, res) => {
     try {
         const tournamentId = await createTournament(tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id);
         if (tournamentId) {   
-            if (tournament_type === 1) {
-                console.log("Nombre de participants au tournoi: ", req.body.nb_participants);
-                await generateTournamentRounds(tournamentId, nb_participants);
-            }
+            console.log("Nombre de participants au tournoi: ", req.body.nb_participants);
+            switch (tournament_type) {
+                case 1:
+                    console.log("Tournoi type 1");
+                    await generateTournamentRoundsForType1(tournamentId, nb_participants);
+                    break;
+            
+                case 2:
+                    console.log("Tournoi type 2");
+                    await generateTournamentRoundsForType2(tournamentId, nb_participants);
+                    break;
+            
+                case 3:
+                    console.log("Tournoi type 3");
+                    await generateTournamentRoundsForType3(tournamentId, nb_participants);
+                    break;
+            
+                case 4:
+                    console.log("Tournoi type 4");
+                    await generateTournamentRoundsForType4(tournamentId, nb_participants);
+                    break;
+            
+                case 5:
+                    console.log("Tournoi type 5");
+                    await generateTournamentRoundsForType5(tournamentId, nb_participants);
+                    break;
+            
+                case 6:
+                    console.log("Tournoi type 6");
+                    await generateTournamentRoundsForType6(tournamentId, nb_participants);
+                    break;
+            
+                default:
+                    console.log("Type de tournoi non supporté");
+            }            
             res.status(201).json({ message: 'Tournoi créé avec succès', tournamentId });
         } else {
             res.status(500).json({ error: 'Échec de la création du tournoi' });

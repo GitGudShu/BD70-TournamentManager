@@ -47,47 +47,71 @@ export async function getTournamentDetails(tournamentId) {
 
 export const createTournament = async (tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id) => {
     try {
-        const query = `
-            INSERT INTO Tournament (tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-        const values = [tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id];
-        const [result] = await pool.query(query, values);
-        return result.insertId;
+        const [result] = await pool.query(
+            'CALL CreateTournament(?, ?, ?, ?, ?, ?, ?, ?, @new_tournament_id)',
+            [tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id]
+        );
+
+        const [tournamentIdRow] = await pool.query('SELECT @new_tournament_id as tournamentId');
+        return tournamentIdRow[0].tournamentId;
     } catch (error) {
         console.error("Erreur dans la création du tournoi:", error);
         throw error;
     }
 };
 
-export async function generateTournamentRounds(tournamentId, participantCount) {
+export async function generateTournamentRoundsForType1(tournamentId, participantCount) {
     try {
-        console.log("Début génération des rounds...");
-        console.log(`Nombre de participants: ${participantCount}`);
-        
-        const totalRounds = Math.log2(participantCount);
-        console.log(`Total rounds nécessaires: ${totalRounds}`);
-
-        let currentMatchCount = participantCount / 2;
-        console.log(`Nombre de matchs au premier round: ${currentMatchCount}`);
-
-        for (let round = 1; round <= totalRounds; round++) {
-            console.log(`Création du round ${round}`);
-
-            await pool.query(
-                'INSERT INTO TournamentRound (round, section, tournament_id) VALUES (?, ?, ?)',
-                [round, 1, tournamentId]
-            );
-
-            for (let match = 1; match <= currentMatchCount; match++) {
-                await pool.query(
-                    'INSERT INTO Matchmaking (match_date, location, status, tournamentRound_id) VALUES (?, ?, ?, ?)',
-                    [null, null, 0, round]
-                );
-            }
-            currentMatchCount /= 2;
-        }
+        const [result] = await pool.query(
+            'CALL GenerateTournamentRoundsForType1(?, ?)',
+            [tournamentId, participantCount]
+        );
         return { success: true, message: 'Rounds et matchs générés avec succès' };
+    } catch (error) {
+        console.error('Erreur lors de la génération des rounds:', error);
+        throw error;
+    }
+}
+
+export async function generateTournamentRoundsForType2(tournamentId, participantCount) {
+    try {
+
+    } catch (error) {
+        console.error('Erreur lors de la génération des rounds:', error);
+        throw error;
+    }
+}
+
+export async function generateTournamentRoundsForType3(tournamentId, participantCount) {
+    try {
+
+    } catch (error) {
+        console.error('Erreur lors de la génération des rounds:', error);
+        throw error;
+    }
+}
+
+export async function generateTournamentRoundsForType4(tournamentId, participantCount) {
+    try {
+
+    } catch (error) {
+        console.error('Erreur lors de la génération des rounds:', error);
+        throw error;
+    }
+}
+
+export async function generateTournamentRoundsForType5(tournamentId, participantCount) {
+    try {
+
+    } catch (error) {
+        console.error('Erreur lors de la génération des rounds:', error);
+        throw error;
+    }
+}
+
+export async function generateTournamentRoundsForType6(tournamentId, participantCount) {
+    try {
+
     } catch (error) {
         console.error('Erreur lors de la génération des rounds:', error);
         throw error;
