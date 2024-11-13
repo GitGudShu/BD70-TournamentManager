@@ -7,9 +7,7 @@
             <div class="text-overline text-secondary"> {{ state }}</div>
           </template>
           <div class="text-h5 q-mt-sm q-mb-xs text-accent"> {{ title }}</div>
-          <div class="text-caption text-accent">
-            {{ content }}
-          </div>
+          <div class="text-caption text-accent" v-html="content"></div>
         </q-card-section>
 
         <q-card-section class="col-5 flex flex-center" v-if="image">
@@ -27,11 +25,11 @@
           <div>
             <q-btn flat round icon="event" class="text-accent" />
             <q-btn flat class="text-accent">
-              13:00 - 15:00
+              {{ dates }}
             </q-btn>
           </div>
 
-          <q-btn flat color="primary" class="bg-accent">
+          <q-btn flat color="primary" class="bg-accent" @click="goToTournamentDetails(tournament.tournament_id)">
             Participer
           </q-btn>
         </q-card-actions>
@@ -43,10 +41,15 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
 const props = defineProps({
   title: String,
   state: String,
   type: String,
+  dates: String,
   content: {
     type: String,
     default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget sapien. Tempor nec, auctor a, ultrices nec, pellentesque eu, massa. Donec nec massa."
@@ -56,6 +59,11 @@ const props = defineProps({
     default: "placeholder.png"
   }
 })
+
+const goToTournamentDetails = (tournamentId) => {
+  // console.log(tournamentId)
+  router.push(`/tournament/${tournamentId}`);
+};
 </script>
 
 <style scoped>

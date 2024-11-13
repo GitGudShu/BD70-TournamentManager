@@ -2,17 +2,31 @@
   <q-page>
     <div class="wrapper">
 
-      <!-- Here's an example of how you can use the cards :) -->
-      <!-- <div class="row">
-        <Card title="Card 1" state="En cours..." />
-        <Card title="Card 1" state="En cours..." />
-      </div> -->
+      <div class="text-h3 text-center">Mes tournois</div>
+
+      <div class="text-subtitle1 text-center welcome-message">
+        Découvrez les détails des tournois auxquels vous participez !
+      </div>
 
       <div class="row">
-        <template v-for="game in allGames">
-          <Card :title="game.game_name" state="En cours..." :content="game.game_rules"/>
+        <template v-for="tournament in allTournaments" :key="tournament.tournament_id">
+          <Card
+            :title="tournament.tournament_name"
+            :state="getTournamentState(tournament.start_date, tournament.end_date)"
+            :dates="`${new Date(tournament.start_date).toLocaleDateString()} - ${new Date(tournament.end_date).toLocaleDateString()}`"
+            :xid="tournament.tournament_id"
+            :content="`
+              Jeu: ${getGameDetails(tournament.game_id).name} <br>
+              Participants: ${tournament.nb_participants} <br>
+              Type: ${getTournamentType(tournament.tournament_type)}
+            `"
+            :image="getGameDetails(tournament.game_id).image"
+            type="tournament"
+            style="max-width: 50%;"
+          />
         </template>
       </div>
+
 
     </div>
   </q-page>
@@ -23,26 +37,61 @@ import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
 import Card from 'src/components/Card.vue';
 
+const allTournaments = ref([]);
 
-const allGames = ref([]);
+const tournamentTypes = [
+  { label: 'Arbre unique', value: 1 },
+  { label: 'Ronde suisse + élimination directe', value: 2 },
+  { label: 'Winner/Looser bracket', value: 3 },
+  { label: 'Championnat', value: 4 },
+  { label: 'Championnat puis playoffs', value: 5 },
+  { label: 'Phases de groupes', value: 6 },
+];
 
-const fetchGames = async () => {
+const fetchTournaments = async () => {
   try {
-    const response = await api.get('/games');
-    allGames.value = response.data;
-    console.log(allGames.value);
+    const response = await api.get('/getTournaments');
+    allTournaments.value = response.data;
+    // console.log(allTournaments.value);
   } catch (error) {
-    console.error("Fetch games failed", error);
+    console.error("Fetch tournaments failed", error);
   }
-}
+};
+
+const getTournamentState = (startDate, endDate) => {
+  const today = new Date();
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (today < start) return "À venir";
+  if (today > end) return "Terminé";
+  return "En cours";
+};
+
+const getTournamentType = (typeId) => {
+  const type = tournamentTypes.find(t => t.value === typeId);
+  return type ? type.label : 'Type inconnu';
+};
+
+const gameImageMap = {
+  1: { name: 'Les échecs', image: '/games/chess.jpg' },
+  2: { name: 'Othello', image: '/games/othello.jpg' },
+  3: { name: 'Catane', image: '/games/catan.jpg' },
+  4: { name: 'Go', image: '/games/go.jpg' },
+  5: { name: 'Shogi', image: '/games/shogi.jpg' },
+  6: { name: 'Carcassonne', image: '/games/carcassone.jpg' },
+  7: { name: 'Puissance 4', image: '/games/connect4.jpg' },
+  8: { name: 'Risk', image: '/games/risk.jpg' },
+  9: { name: 'Scrabble', image: '/games/scrabble.jpg' },
+  10: { name: 'Dames', image: '/games/draughts.jpg' },
+};
+
+const getGameDetails = (gameId) => {
+  return gameImageMap[gameId] || { name: 'Unknown Game', image: '/placeholder.png' };
+};
 
 onMounted(() => {
-  try {
-    fetchGames();
-  }
-  catch (error) {
-    console.log(error);
-  }
+  fetchTournaments();
 });
 
 </script>

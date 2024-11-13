@@ -46,57 +46,57 @@
     </q-page>
   </template>
 
-  <script setup>
-  import { onMounted, ref } from 'vue';
-  import { api } from 'src/boot/axios';
-  import { useRouter } from 'vue-router';
+<script setup>
+import { onMounted, ref } from 'vue';
+import { api } from 'src/boot/axios';
+import { useRouter } from 'vue-router';
 
-  const router = useRouter();
-  const allTournaments = ref([]);
+const router = useRouter();
+const allTournaments = ref([]);
 
-  const tournamentTypes = [
-    { label: 'Arbre unique', value: 1 },
-    { label: 'Ronde suisse + élimination directe', value: 2 },
-    { label: 'Winner/Looser bracket', value: 3 },
-    { label: 'Championnat', value: 4 },
-    { label: 'Championnat puis playoffs', value: 5 },
-    { label: 'Phases de groupes', value: 6 },
-  ];
+const tournamentTypes = [
+  { label: 'Arbre unique', value: 1 },
+  { label: 'Ronde suisse + élimination directe', value: 2 },
+  { label: 'Winner/Looser bracket', value: 3 },
+  { label: 'Championnat', value: 4 },
+  { label: 'Championnat puis playoffs', value: 5 },
+  { label: 'Phases de groupes', value: 6 },
+];
 
-  const fetchTournaments = async () => {
-    try {
-      const response = await api.get('/getTournaments');
-      allTournaments.value = response.data;
-      // console.log(allTournaments.value);
-    } catch (error) {
-      console.error("Fetch tournaments failed", error);
-    }
-  };
-
-  const getTournamentState = (startDate, endDate) => {
-    const today = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (today < start) return "À venir";
-    if (today > end) return "Terminé";
-    return "En cours";
-  };
-
-  const getTournamentType = (typeId) => {
-    const type = tournamentTypes.find(t => t.value === typeId);
-    return type ? type.label : 'Type inconnu';
-  };
-
-  const goToTournamentDetails = (tournamentId) => {
-    // console.log(tournamentId)
-    router.push(`/tournament/${tournamentId}`);
+const fetchTournaments = async () => {
+  try {
+    const response = await api.get('/getTournaments');
+    allTournaments.value = response.data;
+    // console.log(allTournaments.value);
+  } catch (error) {
+    console.error("Fetch tournaments failed", error);
+  }
 };
 
-  onMounted(() => {
-    fetchTournaments();
-  });
-  </script>
+const getTournamentState = (startDate, endDate) => {
+  const today = new Date();
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (today < start) return "À venir";
+  if (today > end) return "Terminé";
+  return "En cours";
+};
+
+const getTournamentType = (typeId) => {
+  const type = tournamentTypes.find(t => t.value === typeId);
+  return type ? type.label : 'Type inconnu';
+};
+
+const goToTournamentDetails = (tournamentId) => {
+  // console.log(tournamentId)
+  router.push(`/tournament/${tournamentId}`);
+};
+
+onMounted(() => {
+  fetchTournaments();
+});
+</script>
 
   <style scoped>
   .logo {

@@ -20,7 +20,6 @@
         <template v-for="game in allGames" :key="game.game_id">
           <Card
             :title="game.game_name"
-            state="En cours..."
             :content="game.game_rules"
             :image="getImagePath(game.game_name)"
           />
