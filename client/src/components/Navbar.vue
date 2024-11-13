@@ -6,13 +6,37 @@
 
       <div class="nav-items">
         <router-link v-for="page in pages" :key="page.path" :to="page.path" class="nav-link"  exact>
-          <q-item-section>
-            {{ page.name }}
-          </q-item-section>
+          <template v-if="page.name === 'CREER UN TOURNOI'">
+            <!-- Only display this section if userRole is "Organisateur" -->
+            <q-item-section v-if="userRole === 'Organisateur'">
+              {{ page.name }}
+            </q-item-section>
+          </template>
+          <template v-else>
+            <q-item-section>
+              {{ page.name }}
+            </q-item-section>
+          </template>
         </router-link>
       </div>
 
       <div class="nav-links">
+        <template v-if="userRole === 'Organisateur'">
+          <div class="hero-container">
+            <q-item clickable v-ripple>
+              <q-item-section side>
+                <q-avatar rounded size="50px">
+                  <img :src="userAvatar" alt="user avatar" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-h6 text-accent">{{ fullName }}</q-item-label>
+                <q-item-label caption class="text-caption text-secondary">{{ userRole }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
+        </template>
+        <template v-else>
           <router-link class="nav-link" to="/update_player" exact>
             <div class="hero-container">
               <q-item clickable v-ripple>
@@ -28,7 +52,8 @@
               </q-item>
             </div>
           </router-link>
-          <q-btn @click="logout" icon="logout" label="DÉCONNEXION" class="logout logout-mobile text-primary" />
+        </template>
+        <q-btn @click="logout" icon="logout" label="DÉCONNEXION" class="logout logout-mobile text-primary" />
       </div>
 
   </nav>

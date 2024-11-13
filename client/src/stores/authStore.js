@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 
 export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false);
+  const userId = ref('');
   const userName = ref('');
   const userLastName = ref('');
   const email = ref('');
@@ -51,6 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
   const fetchUserDetails = async () => {
     try {
       const response = await api.get('/user/details');
+      userId.value = response.data.userId;
       userName.value = response.data.name;
       userLastName.value = response.data.lastName;
       userRole.value = response.data.role;
