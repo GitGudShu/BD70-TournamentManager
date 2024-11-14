@@ -124,9 +124,14 @@ onMounted(() => {
 <template>
   <q-page>
     <div class="wrapper">
-      <div class="text-h3 text-center">Mes tournois</div>
+      <div class="text-h3 text-center">Tournois</div>
+
       <div class="text-subtitle1 text-center welcome-message">
-        Découvrez les détails des tournois auxquels vous participez !
+        Découvrez tous nos tournois et rejoignez la compétition !
+      </div>
+
+      <div class="text-h5 text-center tournament-section-title">
+        Nos Tournois Disponibles
       </div>
 
       <div class="tournament-list">
@@ -158,7 +163,7 @@ import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
 
 const allTournaments = ref([]);
-const playerId = 2; 
+const playerId = 2;
 
 // Récupérer la liste des tournois
 const fetchTournaments = async () => {

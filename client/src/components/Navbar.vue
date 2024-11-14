@@ -69,8 +69,8 @@ const authStore = useAuthStore();
 
 const nav_items = [
   { name: 'ACCUEIL', path: '/home' },
-  { name: 'VOS MATCHS', path: '/match' },
-  { name: "TOURNOIS", path: '/tournament' },
+  { name: 'VOS MATCHS', path: '/tournament' },
+  { name: "TOURNOIS", path: '/match' },
   { name: "CREER UN TOURNOI", path: '/create_tournament' },
   { name: 'STATISTIQUES', path: '/stats' }
 ];

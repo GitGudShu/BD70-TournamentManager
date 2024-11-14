@@ -1,14 +1,10 @@
 <template>
     <q-page>
       <div class="wrapper">
-        <div class="text-h3 text-center">Tournois</div>
 
+        <div class="text-h3 text-center">Mes tournois</div>
         <div class="text-subtitle1 text-center welcome-message">
-          Découvrez tous nos tournois et rejoignez la compétition !
-        </div>
-
-        <div class="text-h5 text-center tournament-section-title">
-          Nos Tournois Disponibles
+          Découvrez les détails des tournois auxquels vous participez !
         </div>
 
         <div class="row">

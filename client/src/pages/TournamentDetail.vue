@@ -14,32 +14,10 @@
       </div>
 
       <TTP
-        v-if="tournament && tournament.rounds"
+        v-if="rounds_mapped"
         :name="tournament.tournament_name"
-        :rounds="roundsTest"
+        :rounds="rounds_mapped"
       />
-
-
-      <!-- <div v-for="round in tournament.rounds" :key="round.tournamentRound_id">
-        <div class="text-h6">{{ getRoundName(round.round, tournament.rounds.length) }} - Section {{ round.section }}</div>
-
-        <div v-if="round.matches.length > 0">
-          <div v-for="match in round.matches" :key="match.match_id" class="q-mb-md">
-          <q-card>
-              <q-card-section>
-              <div class="text-h6">Match ID: {{ match.match_id }}</div>
-              <div>Date : {{ match.match_date }}</div>
-              <div>Location : {{ match.location }}</div>
-              <div>Status : {{ match.status }}</div>
-              </q-card-section>
-          </q-card>
-          </div>
-        </div>
-
-        <div v-else>
-            <div class="text-body1">Aucun match pour ce round.</div>
-        </div>
-      </div> -->
 
     </div>
     <div v-else>
@@ -59,6 +37,7 @@ const route = useRoute();
 const router = useRouter();
 
 const tournament = ref(null);
+const rounds_mapped = ref(null);
 
 const tournamentTypes = [
     { label: 'Arbre unique', value: 1 },
@@ -97,10 +76,21 @@ const fetchTournamentDetails = async () => {
     try {
         const response = await api.get(`/getTournaments/${tournamentId}`);
         tournament.value = response.data;
-        console.log("Fetched Tournament:", tournament.value);
-        console.log("Rounds:", tournament.value.rounds);
+        // console.log("Fetched Tournament:", tournament.value);
+        // console.log("Rounds:", tournament.value.rounds);
     } catch (error) {
         console.error("Failed to fetch tournament details:", error);
+    }
+};
+
+const fetchMatchDetails = async () => {
+    const tournamentId = route.params.tournamentId;
+    try {
+        const response = await api.get(`/getFormattedTournaments/${tournamentId}`);
+        rounds_mapped.value = response.data;
+        console.log("Fetched Rounds:", rounds_mapped.value);
+    } catch (error) {
+        console.error("Failed to fetch round details:", error);
     }
 };
 
@@ -134,7 +124,8 @@ const roundsTest = [
 ];
 
 onMounted(() => {
-fetchTournamentDetails();
+  fetchTournamentDetails();
+  fetchMatchDetails();
 });
 </script>
 
