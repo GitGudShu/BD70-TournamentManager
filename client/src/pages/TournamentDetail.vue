@@ -13,12 +13,6 @@
         Nombre d'équipes en playoff : {{ tournament.playoffTeams }}<br />
       </div>
 
-      <TournamentTreeEdit
-        v-if="tournament && tournament.rounds"
-        :name="tournament.tournament_name"
-        :rounds="tournament.rounds"
-      />
-
       <TTP
         v-if="tournament && tournament.rounds"
         :name="tournament.tournament_name"
@@ -59,7 +53,6 @@
 import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
-import TournamentTreeEdit from 'src/components/TournamentTreeEdit.vue';
 import TTP from 'src/components/TournamentTreeProgress.vue';
 
 const route = useRoute();
