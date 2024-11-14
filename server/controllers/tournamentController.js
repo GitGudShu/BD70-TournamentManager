@@ -1,4 +1,5 @@
 import { createTournament } from '../models/tournamentModel.js';
+import { getFormattedTournamentDetails } from '../models/tournamentModel.js';
 import { generateTournamentRoundsForType1 } from '../models/tournamentModel.js';
 import { generateTournamentRoundsForType2 } from '../models/tournamentModel.js';
 import { generateTournamentRoundsForType3 } from '../models/tournamentModel.js';
@@ -85,3 +86,19 @@ export const handleCreateTournament = async (req, res) => {
         res.status(500).json({ error: 'Erreur interne du serveur' });
     }
 };
+
+
+export async function getTournamentDetailsController(req, res) {
+    const tournamentId = req.params.tournamentId;
+
+    try {
+        const tournamentDetails = await getFormattedTournamentDetails(tournamentId);
+        if (!tournamentDetails) {
+            return res.status(404).json({ error: 'Tournament not found' });
+        }
+        return res.status(200).json(tournamentDetails);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while fetching tournament details' });
+    }
+}
