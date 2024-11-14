@@ -33,7 +33,7 @@ CREATE TABLE Users (
 
 CREATE TABLE Player (
     player_id INT AUTO_INCREMENT PRIMARY KEY,
-    player_bio VARCHAR(50),
+    player_bio VARCHAR(1000),
     avatar MEDIUMBLOB,
     ranking INT,
     user_id INT,
@@ -168,14 +168,14 @@ INSERT INTO Users (user_name, user_lastname, user_email, user_password) VALUES
 ('Daniel', 'Ricciardo', 'daniel.ricciardo@example.com', '$2b$10$5nHegeYB/uFrSpGqbHleteyI06E3ixBlc7zBGdmSPLUoUHdFRPtFC');
 
 INSERT INTO Player (player_bio, avatar, ranking, user_id) VALUES 
-('Champion du ', NULL, 1, 1),  -- Lewis Hamilton
-('Pilote exce', NULL, 2, 2),  -- Max Verstappen
-('Talentueux pilot', NULL, 3, 3),  -- Charles Leclerc
-('Ancien champi', NULL, 4, 4),  -- Sebastian Vettel
-('Pilote de F1 e', NULL, 5, 5),  -- Fernando Alonso
-('Connu pour ses pe', NULL, 6, 6),  -- Valtteri Bottas
-('Jeune talent promett', NULL, 7, 7),  -- Lando Norris
-('Pilote talentueu', NULL, 8, 8);  -- Daniel Ricciardo
+('Champion du ', NULL, 1, 2),  -- Lewis Hamilton
+('Pilote exce', NULL, 2, 3),  -- Max Verstappen
+('Talentueux pilot', NULL, 3, 4),  -- Charles Leclerc
+('Ancien champi', NULL, 4, 5),  -- Sebastian Vettel
+('Pilote de F1 e', NULL, 5, 6),  -- Fernando Alonso
+('Connu pour ses pe', NULL, 6, 7),  -- Valtteri Bottas
+('Jeune talent promett', NULL, 7, 8),  -- Lando Norris
+('Pilote talentueu', NULL, 8, 9);  -- Daniel Ricciardo
 
 INSERT INTO Tournament (tournament_name, tournament_type, start_date, end_date, nb_participants, game_id, organizer_id) 
 VALUES 
