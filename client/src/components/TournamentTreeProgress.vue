@@ -43,7 +43,7 @@
 
 
 <script setup>
-import { defineProps, ref, reactive } from 'vue';
+import { defineProps, ref, reactive, onMounted } from 'vue';
 
 const props = defineProps({
   name: String,
@@ -72,6 +72,20 @@ const updateWinner = (match, roundIndex) => {
     activeRound.value += 1;
   }
 };
+
+const initializeWinners = () => {
+  reactiveRounds.forEach((round, roundIndex) => {
+    round.matchs.forEach((match) => {
+      if (match.team1.score !== null && match.team2.score !== null) {
+        updateWinner(match, roundIndex);
+      }
+    });
+  });
+};
+
+onMounted(() => {
+  initializeWinners();
+});
 
 </script>
 
@@ -124,6 +138,7 @@ const updateWinner = (match, roundIndex) => {
   border-radius: 5px;
   background-color: #f5f5f5;
   border: 1.5px solid #e0e0e0;
+  align-items: center;
 }
 
 .score-winner {

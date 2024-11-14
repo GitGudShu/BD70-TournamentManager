@@ -109,8 +109,8 @@ const roundsTest = [
     matchs: [
       {
         id: 1,
-        team1: { id: 1, name: "Team A", score: null },
-        team2: { id: 2, name: "Team B", score: null },
+        team1: { id: 1, name: "Team A", score: 1 },
+        team2: { id: 2, name: "Team B", score: 2 },
         winner: null,
       },
       {
