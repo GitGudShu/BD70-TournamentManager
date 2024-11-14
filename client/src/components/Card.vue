@@ -29,7 +29,7 @@
             </q-btn>
           </div>
 
-          <q-btn flat color="primary" class="bg-accent" @click="goToTournamentDetails(tournament.tournament_id)">
+          <q-btn flat color="primary" class="bg-accent" @click="participateInTournament(xid)">
             Participer
           </q-btn>
         </q-card-actions>
@@ -41,15 +41,20 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+// import { computed } from 'vue';
+import { api } from 'src/boot/axios';
+import { useAuthStore } from 'src/stores/authStore';
+import { computed } from 'vue';
 
-const router = useRouter();
+const authStore = useAuthStore();
+const playerId = 2;
 
 const props = defineProps({
   title: String,
   state: String,
   type: String,
   dates: String,
+  xid: Number,
   content: {
     type: String,
     default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget sapien. Tempor nec, auctor a, ultrices nec, pellentesque eu, massa. Donec nec massa."
@@ -60,9 +65,16 @@ const props = defineProps({
   }
 })
 
-const goToTournamentDetails = (tournamentId) => {
-  // console.log(tournamentId)
-  router.push(`/tournament/${tournamentId}`);
+// Participer à un tournoi
+const participateInTournament = async (tournamentId) => {
+  try {
+    const response = await api.post(`/participateInTournament/${tournamentId}/${playerId}`);
+    console.log("Participation réussie :", response.data);
+    // Mettre à jour l'état du tournoi ou afficher une confirmation si nécessaire
+  } catch (error) {
+    console.error("Erreur de participation", error);
+    // Gestion d'erreur : afficher un message d'erreur à l'utilisateur
+  }
 };
 </script>
 
