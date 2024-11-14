@@ -19,6 +19,12 @@
         :rounds="tournament.rounds"
       />
 
+      <TTP
+        v-if="tournament && tournament.rounds"
+        :name="tournament.tournament_name"
+        :rounds="roundsTest"
+      />
+
 
       <!-- <div v-for="round in tournament.rounds" :key="round.tournamentRound_id">
         <div class="text-h6">{{ getRoundName(round.round, tournament.rounds.length) }} - Section {{ round.section }}</div>
@@ -54,6 +60,7 @@ import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import TournamentTreeEdit from 'src/components/TournamentTreeEdit.vue';
+import TTP from 'src/components/TournamentTreeProgress.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -103,6 +110,35 @@ const fetchTournamentDetails = async () => {
         console.error("Failed to fetch tournament details:", error);
     }
 };
+
+const roundsTest = [
+  {
+    matchs: [
+      {
+        id: 1,
+        team1: { id: 1, name: "Team A", score: null },
+        team2: { id: 2, name: "Team B", score: null },
+        winner: null,
+      },
+      {
+        id: 2,
+        team1: { id: 3, name: "Team C", score: null },
+        team2: { id: 4, name: "Team D", score: null },
+        winner: null,
+      },
+    ],
+  },
+  {
+    matchs: [
+      {
+        id: 3,
+        team1: { id: 1, name: "Winner of Match 1", score: null },
+        team2: { id: 3, name: "Winner of Match 2", score: null },
+        winner: null,
+      },
+    ],
+  },
+];
 
 onMounted(() => {
 fetchTournamentDetails();
