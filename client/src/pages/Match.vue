@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <q-page>
     <div class="wrapper">
 
@@ -119,4 +119,156 @@ onMounted(() => {
   align-items: center;
 }
 
+</style> -->
+
+<template>
+  <q-page>
+    <div class="wrapper">
+      <div class="text-h3 text-center">Mes tournois</div>
+      <div class="text-subtitle1 text-center welcome-message">
+        Découvrez les détails des tournois auxquels vous participez !
+      </div>
+
+      <div class="tournament-list">
+        <template v-for="tournament in allTournaments" :key="tournament.tournament_id">
+          <div class="tournament-item">
+            <div class="tournament-details">
+              <div class="text-h6">{{ tournament.tournament_name }}</div>
+              <div>État: {{ getTournamentState(tournament.start_date, tournament.end_date) }}</div>
+              <div>Dates: {{ formatDateRange(tournament.start_date, tournament.end_date) }}</div>
+              <div>Jeu: {{ getGameDetails(tournament.game_id).name }}</div>
+              <div>Participants: {{ tournament.nb_participants }}</div>
+              <div>Type: {{ getTournamentType(tournament.tournament_type) }}</div>
+            </div>
+            <q-btn
+              label="Participer"
+              color="primary"
+              @click="participateInTournament(tournament.tournament_id)"
+              class="participate-button"
+            />
+          </div>
+        </template>
+      </div>
+    </div>
+  </q-page>
+</template>
+
+<script setup>
+import { onMounted, ref } from 'vue';
+import { api } from 'src/boot/axios';
+
+const allTournaments = ref([]);
+const playerId = 2; 
+
+// Récupérer la liste des tournois
+const fetchTournaments = async () => {
+  try {
+    const response = await api.get('/getTournaments');
+    allTournaments.value = response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des tournois", error);
+  }
+};
+
+// Participer à un tournoi
+const participateInTournament = async (tournamentId) => {
+  try {
+    const response = await api.post(`/participateInTournament/${tournamentId}/${playerId}`);
+    console.log("Participation réussie :", response.data);
+    // Mettre à jour l'état du tournoi ou afficher une confirmation si nécessaire
+  } catch (error) {
+    console.error("Erreur de participation", error);
+    // Gestion d'erreur : afficher un message d'erreur à l'utilisateur
+  }
+};
+
+// Obtenir l'état du tournoi
+const getTournamentState = (startDate, endDate) => {
+  const today = new Date();
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (today < start) return "À venir";
+  if (today > end) return "Terminé";
+  return "En cours";
+};
+
+// Formater les dates pour l'affichage
+const formatDateRange = (startDate, endDate) => {
+  return `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}`;
+};
+
+// Obtenir le type de tournoi
+const getTournamentType = (typeId) => {
+  const tournamentTypes = [
+    { label: 'Arbre unique', value: 1 },
+    { label: 'Ronde suisse + élimination directe', value: 2 },
+    { label: 'Winner/Looser bracket', value: 3 },
+    { label: 'Championnat', value: 4 },
+    { label: 'Championnat puis playoffs', value: 5 },
+    { label: 'Phases de groupes', value: 6 },
+  ];
+  const type = tournamentTypes.find(t => t.value === typeId);
+  return type ? type.label : 'Type inconnu';
+};
+
+// Détails des jeux
+const getGameDetails = (gameId) => {
+  const gameImageMap = {
+    1: { name: 'Les échecs', image: '/games/chess.jpg' },
+    2: { name: 'Othello', image: '/games/othello.jpg' },
+    3: { name: 'Catane', image: '/games/catan.jpg' },
+    4: { name: 'Go', image: '/games/go.jpg' },
+    5: { name: 'Shogi', image: '/games/shogi.jpg' },
+    6: { name: 'Carcassonne', image: '/games/carcassone.jpg' },
+    7: { name: 'Puissance 4', image: '/games/connect4.jpg' },
+    8: { name: 'Risk', image: '/games/risk.jpg' },
+    9: { name: 'Scrabble', image: '/games/scrabble.jpg' },
+    10: { name: 'Dames', image: '/games/draughts.jpg' },
+  };
+  return gameImageMap[gameId] || { name: 'Unknown Game', image: '/placeholder.png' };
+};
+
+onMounted(() => {
+  fetchTournaments();
+});
+
+</script>
+
+<style scoped>
+.wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1em;
+  width: 70%;
+  margin: 1em auto;
+  background-color: var(--sad-secondary);
+  border-radius: .5em;
+  padding: 1.5em;
+}
+
+.tournament-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.tournament-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  border: 1px solid #ddd;
+  border-radius: .5em;
+  background-color: #fff;
+}
+
+.tournament-details {
+  flex: 1;
+}
+
+.participate-button {
+  margin-left: 1em;
+}
 </style>
