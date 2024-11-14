@@ -43,7 +43,7 @@
 
 
 <script setup>
-import { defineProps, ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 
 const props = defineProps({
   name: String,

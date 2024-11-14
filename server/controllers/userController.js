@@ -96,8 +96,14 @@ export async function getUserDetails(req, res) {
 
         // Check if the user is a player by looking for an entry in the Player table
         const [playerRows] = await pool.query(`
-            SELECT player_bio, avatar, ranking 
+            SELECT * 
             FROM Player 
+            WHERE user_id = ?
+        `, [userId]);
+
+        const [organizerRows] = await pool.query(`
+            SELECT *
+            FROM Organizer
             WHERE user_id = ?
         `, [userId]);
 
@@ -109,9 +115,18 @@ export async function getUserDetails(req, res) {
             const avatarBase64 = player.avatar ? `data:image/png;base64,${Buffer.from(player.avatar).toString('base64')}` : null;
 
             playerDetails = {
+                playerId: player.player_id,
                 bio: player.player_bio,
                 avatar: avatarBase64,
                 ranking: player.ranking
+            };
+        }
+
+        if (organizerRows.length > 0) {
+            const organizer = organizerRows[0];
+            playerDetails = {
+                organizerId: organizer.organizer_id,
+                organizationName: organizer.organization_name
             };
         }
 

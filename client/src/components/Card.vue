@@ -41,13 +41,12 @@
 </template>
 
 <script setup>
-// import { computed } from 'vue';
+import { computed } from 'vue';
 import { api } from 'src/boot/axios';
 import { useAuthStore } from 'src/stores/authStore';
-import { computed } from 'vue';
 
 const authStore = useAuthStore();
-const playerId = 2;
+const playerId = computed(() => authStore.playerId);
 
 const props = defineProps({
   title: String,
@@ -68,7 +67,7 @@ const props = defineProps({
 // Participer à un tournoi
 const participateInTournament = async (tournamentId) => {
   try {
-    const response = await api.post(`/participateInTournament/${tournamentId}/${playerId}`);
+    const response = await api.post(`/participateInTournament/${tournamentId}/${playerId.value}`);
     console.log("Participation réussie :", response.data);
     // Mettre à jour l'état du tournoi ou afficher une confirmation si nécessaire
   } catch (error) {
@@ -76,6 +75,8 @@ const participateInTournament = async (tournamentId) => {
     // Gestion d'erreur : afficher un message d'erreur à l'utilisateur
   }
 };
+
+
 </script>
 
 <style scoped>

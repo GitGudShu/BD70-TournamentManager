@@ -6,6 +6,8 @@ import { useRouter } from 'vue-router';
 export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false);
   const userId = ref('');
+  const playerId = ref('');
+  const organizerId = ref('');
   const userName = ref('');
   const userLastName = ref('');
   const email = ref('');
@@ -35,6 +37,9 @@ export const useAuthStore = defineStore('auth', () => {
       isAuthenticated.value = false;
 
       // Clear user details upon logout
+      userId.value = null;
+      playerId.value = null;
+      organizerId.value = null;
       userName.value = '';
       userLastName.value = '';
       userRole.value = '';
@@ -60,9 +65,13 @@ export const useAuthStore = defineStore('auth', () => {
 
       // Additional fields for players
       if (userRole.value === 'Joueur') {
+        playerId.value = Number(response.data.playerId);
         bio.value = response.data.bio;
         avatar.value = response.data.avatar;
         ranking.value = response.data.ranking;
+        console.log('Player details fetched:', response.data);
+      } else if (userRole.value === 'Organisateur') {
+        organizerId.value = response.data.organizerId;
       } else {
         // Clear player-specific fields if it's an organizer
         bio.value = '';
@@ -118,6 +127,9 @@ export const useAuthStore = defineStore('auth', () => {
     ranking,
     fetchUserDetails,
     updateProfile,
-    email
+    email,
+    userId,
+    playerId,
+    organizerId,
   };
 });
