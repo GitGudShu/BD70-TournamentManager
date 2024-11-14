@@ -2,7 +2,7 @@
   <div class="tree-wrapper">
     <div class="title text-h5">{{ name }}</div>
     <div class="tree-container">
-      <div v-for="(round, roundIndex) in rounds" :key="roundIndex" class="round">
+      <div v-for="(round, roundIndex) in reactiveRounds" :key="roundIndex" class="round">
         <div v-for="(match, matchIndex) in round.matchs" :key="match.id" class="match">
           <div class="match-container">
             <div class="match-line">
@@ -43,7 +43,7 @@
 
 
 <script setup>
-import { defineProps, ref, watch } from 'vue';
+import { defineProps, ref, reactive } from 'vue';
 
 const props = defineProps({
   name: String,
@@ -54,9 +54,9 @@ const props = defineProps({
 });
 
 const activeRound = ref(1);
+const reactiveRounds = reactive(JSON.parse(JSON.stringify(props.rounds))); // Deep clone for reactivity
 
 const updateWinner = (match, roundIndex) => {
-  // Determine winner
   if (match.team1.score > match.team2.score) {
     match.winner = match.team1.id;
   } else if (match.team2.score > match.team1.score) {
@@ -66,33 +66,13 @@ const updateWinner = (match, roundIndex) => {
   }
 
   // Check if all matches in the current round are complete
-  const allMatchesComplete = props.rounds[roundIndex].matchs.every(m => m.winner !== null);
+  const allMatchesComplete = reactiveRounds[roundIndex].matchs.every(m => m.winner !== null);
 
-  // If all matches are complete and it's the active round, move to the next round
   if (allMatchesComplete && roundIndex + 1 === activeRound.value) {
     activeRound.value += 1;
   }
 };
 
-
-const isRoundCompleted = (round) => {
-  return round.matchs.every(match => match.winner !== null);
-};
-
-const accessibleRounds = ref(props.rounds.map((_, index) => index === 0)); // Only the first round is accessible initially
-
-// Watch each round's completion status
-watch(
-  () => props.rounds,
-  (newRounds) => {
-    newRounds.forEach((round, index) => {
-      if (index > 0) {
-        accessibleRounds.value[index] = isRoundCompleted(newRounds[index - 1]);
-      }
-    });
-  },
-  { deep: true }
-);
 </script>
 
 
