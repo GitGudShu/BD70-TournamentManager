@@ -2,7 +2,7 @@
     <q-page>
       <div class="wrapper">
         <div class="text-h4 text-center text-primary text-bold">CRÉER UN TOURNOI</div>
-  
+
         <q-form @submit="createTournament">
             <q-input v-model="tournamentName" label="Nom du tournoi" outlined dense required />
 
@@ -68,6 +68,7 @@
 <script setup>
 import { ref, computed, onMounted} from 'vue';
 import { api } from 'src/boot/axios';
+import { useAuthStore } from 'src/stores/authStore';
 
 const tournamentName = ref('');
 const selectedTournamentType = ref(null);
@@ -75,8 +76,10 @@ const participantCount = ref(null);
 const playoffTeams = ref(null);
 const startDate = ref('');
 const endDate = ref('');
-const typeTournament = ref('null');
 const selectedGame = ref(null);
+
+const authStore = useAuthStore();
+const organizerId = computed(() => authStore.organizerId);
 
 const tournamentTypes = [
     { label: 'Arbre unique', value: 1 },
@@ -137,9 +140,9 @@ const createTournament = async () => {
     start_date: startDate.value,
     end_date: endDate.value,
     nb_participants : participantCount.value,
-    playoffTeams: playoffTeams.value || null, 
+    playoffTeams: playoffTeams.value || null,
     game_id: selectedGame.value.value,
-    organizer_id: 1, 
+    organizer_id: organizerId.value,
   };
 
   console.log(tournamentData);
@@ -166,4 +169,4 @@ background-color: var(--sad-secondary);
 border-radius: .5em;
 padding: 1.5em;
 }
-</style>  
+</style>
