@@ -179,7 +179,7 @@ INSERT INTO Player (player_bio, avatar, ranking, user_id) VALUES
 
 INSERT INTO Tournament (tournament_name, tournament_type, start_date, end_date, nb_participants, game_id, organizer_id) 
 VALUES 
-('Tournoi de Stratégie 2024', 1, '2024-12-01', '2024-12-10', 16, 1, 1);
+('GP Abu Dhabi', 1, '2024-12-01', '2024-12-10', 4, 1, 1);
 -- TRANSACTIONS
 
 -- This transaction is used to insert a new player into the database, it creates a new user and a new player (linked to the user)
@@ -374,4 +374,8 @@ END //
 DELIMITER ;
 
 -- procedures mockées
-CALL GenerateTournamentRoundsForType1(1, 16);
+CALL GenerateTournamentRoundsForType1(1, 4);
+INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (1, 1, NULL, NULL);
+INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (2, 1, NULL, NULL);
+INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (3, 2, NULL, NULL);
+INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (4, 2, NULL, NULL);
