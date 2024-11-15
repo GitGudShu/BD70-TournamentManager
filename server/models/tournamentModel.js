@@ -183,6 +183,30 @@ export async function getFormattedTournamentDetails(tournamentId) {
     }
 }
 
+export async function updateMatchScore(matchId, player1Id, score1, player2Id, score2, totalParticipants) {
+    try {
+      const nextMatchId = getNextMatchId(totalParticipants, matchId);
+      console.log("Paramètres envoyés à la procédure :", {
+        matchId,
+        player1Id,
+        score1,
+        player2Id,
+        score2,
+        nextMatchId,
+      });
+  
+      const result = await pool.query(
+        'CALL UpdateMatchResult(?, ?, ?, ?, ?, ?)', 
+        [matchId, player1Id, score1, player2Id, score2, nextMatchId]
+      );
+  
+      return { success: true, message: "Score mis à jour avec succès" };
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du score :", error);
+      throw error;
+    }
+  }  
+
 export async function generateTournamentRoundsForType1(tournamentId, participantCount) {
     try {
         const [result] = await pool.query(

@@ -10,6 +10,10 @@ import { generateTournamentRoundsForType6 } from '../models/tournamentModel.js';
 import { getAllTournaments } from '../models/tournamentModel.js';
 import { getTournamentDetails } from '../models/tournamentModel.js';
 
+import { updateMatchScore } from '../models/tournamentModel.js';
+
+import pool from '../config/database.js';
+
 export async function getTournaments(req, res) {
     try {
         const tournaments = await getAllTournaments();
@@ -102,3 +106,51 @@ export async function getTournamentDetailsController(req, res) {
         return res.status(500).json({ error: 'An error occurred while fetching tournament details' });
     }
 }
+
+export const handleUpdateMatchScore = async (req, res) => {
+    const { matchId, team1, team2 } = req.body;
+  
+    try {
+      // Vérification des données envoyées
+      if (!team1 || !team2) {
+        return res.status(400).json({ success: false, message: "Données des équipes manquantes" });
+      }
+  
+      // Récupération de l'ID du round et du tournoi
+      const match = await pool.query('SELECT tournamentRound_id FROM Matchmaking WHERE match_id = ?', [matchId]);
+      if (match.length === 0) {
+        return res.status(404).json({ success: false, message: 'Match non trouvé' });
+      }
+      const tournamentRoundId = match[0][0]?.tournamentRound_id;
+  
+      const tournamentResult = await pool.query('SELECT tournament_id FROM TournamentRound WHERE tournamentRound_id = ?', [tournamentRoundId]);
+      if (tournamentResult.length === 0) {
+        return res.status(404).json({ success: false, message: 'Tournoi non trouvé' });
+      }
+      const tournamentId = tournamentResult[0][0]?.tournament_id;
+  
+      const participantsResult = await pool.query(
+        'SELECT nb_participants FROM Tournament WHERE tournament_id = ?',
+        [tournamentId]
+      );
+      if (participantsResult.length === 0) {
+        return res.status(404).json({ success: false, message: 'Nombre de participants non trouvé' });
+      }
+      const totalParticipants = participantsResult[0][0]?.nb_participants;
+  
+      // Appel de la fonction updateMatchScore avec les données combinées
+      const result = await updateMatchScore(
+        matchId,
+        team1.playerId,
+        team1.score,
+        team2.playerId,
+        team2.score,
+        totalParticipants
+      );
+  
+      res.status(200).json(result);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du score:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la mise à jour du score' });
+    }
+  };  

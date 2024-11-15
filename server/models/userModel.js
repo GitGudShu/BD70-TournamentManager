@@ -16,5 +16,5 @@ export async function createUserWithPlayer(userData) {
 
 export async function findUserByEmail(email) {
     const [rows] = await pool.query('SELECT * FROM Users WHERE user_email = ?', [email]);
-    return rows[0]; // Return the first user found
+    return rows[0]; 
 }

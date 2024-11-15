@@ -41,9 +41,9 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
+import { api } from 'src/boot/axios'; // Assure-toi d'avoir correctement configuré Axios
 
 const props = defineProps({
   name: String,
@@ -54,29 +54,64 @@ const props = defineProps({
 });
 
 const activeRound = ref(1);
-const reactiveRounds = reactive(JSON.parse(JSON.stringify(props.rounds))); // Deep clone for reactivity
+const reactiveRounds = reactive(JSON.parse(JSON.stringify(props.rounds))); // Deep clone pour réactivité
 
+// Fonction pour mettre à jour le gagnant
 const updateWinner = (match, roundIndex) => {
   if (match.team1.score > match.team2.score) {
     match.winner = match.team1.id;
   } else if (match.team2.score > match.team1.score) {
     match.winner = match.team2.id;
   } else {
-    match.winner = null; // No winner if scores are equal
+    match.winner = null; // Pas de gagnant si les scores sont égaux
   }
 
-  // Check if all matches in the current round are complete
+  // Envoi de la mise à jour des scores via l'API
+  updateScore(match, roundIndex);
+  
+  // Vérifier si tous les matchs de la ronde sont terminés
   const allMatchesComplete = reactiveRounds[roundIndex].matchs.every(m => m.winner !== null);
-
+  
+  // Passer à la ronde suivante si tous les matchs sont terminés
   if (allMatchesComplete && roundIndex + 1 === activeRound.value) {
     activeRound.value += 1;
+  }
+};
+
+const updateScore = async (match) => {
+  try {
+    // Payload combiné pour les deux équipes
+    const payload = {
+      matchId: match.id,
+      team1: {
+        playerId: match.team1.id,
+        score: match.team1.score,
+      },
+      team2: {
+        playerId: match.team2.id,
+        score: match.team2.score,
+      },
+    };
+
+    // Affichage du payload pour débogage
+    console.log('Payload envoyé :', payload);
+
+    // Envoi de la requête
+    const response = await api.post('/update-match-score', payload);
+
+    if (response.status === 200) {
+      console.log('Scores updated successfully!');
+    }
+  } catch (error) {
+    console.error('Error updating match score:', error);
   }
 };
 
 const initializeWinners = () => {
   reactiveRounds.forEach((round, roundIndex) => {
     round.matchs.forEach((match) => {
-      if (match.team1.score !== null && match.team2.score !== null) {
+      if (match.team1.score != null && match.team2.score != null) {
+        console.log("caca");
         updateWinner(match, roundIndex);
       }
     });
@@ -84,11 +119,8 @@ const initializeWinners = () => {
 };
 
 onMounted(() => {
-  initializeWinners();
 });
-
 </script>
-
 
 <style scoped>
 .tree-wrapper {
@@ -182,6 +214,4 @@ onMounted(() => {
   background-color: #cccccc;
   cursor: not-allowed;
 }
-
 </style>
-

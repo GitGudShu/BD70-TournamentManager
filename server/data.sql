@@ -180,7 +180,6 @@ INSERT INTO Player (player_bio, avatar, ranking, user_id) VALUES
 INSERT INTO Tournament (tournament_name, tournament_type, start_date, end_date, nb_participants, game_id, organizer_id) 
 VALUES 
 ('Tournoi de Stratégie 2024', 1, '2024-12-01', '2024-12-10', 16, 1, 1);
-
 -- TRANSACTIONS
 
 -- This transaction is used to insert a new player into the database, it creates a new user and a new player (linked to the user)
@@ -330,6 +329,46 @@ BEGIN
     HAVING COUNT(pm.player_id) < 2
     LIMIT 1; -- Inscrire le joueur à un seul match du round 1
 
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE UpdateMatchResult(
+    IN p_match_id INT,
+    IN p_player1_id INT,
+    IN p_score1 INT,
+    IN p_player2_id INT,
+    IN p_score2 INT,
+    IN p_next_match_id INT
+)
+BEGIN
+    DECLARE winner_id INT;
+
+    -- Mettre à jour les scores dans PlayerMatch
+    UPDATE PlayerMatch
+    SET score = p_score1
+    WHERE match_id = p_match_id AND player_id = p_player1_id;
+
+    UPDATE PlayerMatch
+    SET score = p_score2
+    WHERE match_id = p_match_id AND player_id = p_player2_id;
+
+    -- Déterminer le gagnant en fonction des scores
+    IF p_score1 > p_score2 THEN
+        SET winner_id = p_player1_id;
+    ELSEIF p_score2 > p_score1 THEN
+        SET winner_id = p_player2_id;
+    ELSE
+        SET winner_id = NULL; -- Match nul ou autres règles
+    END IF;
+
+    -- Ajouter le gagnant au prochain match
+    IF winner_id IS NOT NULL AND p_next_match_id IS NOT NULL THEN
+        INSERT INTO PlayerMatch (player_id, match_id, score, status)
+        VALUES (winner_id, p_next_match_id, NULL, 0); -- Le score est NULL pour le moment
+    END IF;
 END //
 
 DELIMITER ;
