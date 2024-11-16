@@ -43,7 +43,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
-import { api } from 'src/boot/axios'; // Assure-toi d'avoir correctement configuré Axios
+import { api } from 'src/boot/axios';
 
 const props = defineProps({
   name: String,
@@ -54,25 +54,26 @@ const props = defineProps({
 });
 
 const activeRound = ref(1);
-const reactiveRounds = reactive(JSON.parse(JSON.stringify(props.rounds))); // Deep clone pour réactivité
+const reactiveRounds = reactive(JSON.parse(JSON.stringify(props.rounds)));
 
-// Fonction pour mettre à jour le gagnant
-const updateWinner = (match, roundIndex) => {
+const updateWinner = (match, roundIndex, skipApiUpdate = false) => {
   if (match.team1.score > match.team2.score) {
     match.winner = match.team1.id;
   } else if (match.team2.score > match.team1.score) {
     match.winner = match.team2.id;
   } else {
-    match.winner = null; // Pas de gagnant si les scores sont égaux
+    match.winner = null;
   }
 
-  // Envoi de la mise à jour des scores via l'API
-  updateScore(match, roundIndex);
-  
-  // Vérifier si tous les matchs de la ronde sont terminés
+  // Skip API call if it's during initialization
+  if (!skipApiUpdate) {
+    updateScore(match, roundIndex);
+  }
+
+  // Check if all matches are complete
   const allMatchesComplete = reactiveRounds[roundIndex].matchs.every(m => m.winner !== null);
-  
-  // Passer à la ronde suivante si tous les matchs sont terminés
+
+  // Enable the next round if all matches are complete
   if (allMatchesComplete && roundIndex + 1 === activeRound.value) {
     activeRound.value += 1;
   }
@@ -80,7 +81,6 @@ const updateWinner = (match, roundIndex) => {
 
 const updateScore = async (match) => {
   try {
-    // Payload combiné pour les deux équipes
     const payload = {
       matchId: match.id,
       team1: {
@@ -93,10 +93,7 @@ const updateScore = async (match) => {
       },
     };
 
-    // Affichage du payload pour débogage
-    console.log('Payload envoyé :', payload);
-
-    // Envoi de la requête
+    console.log('Payload (scores) :', payload);
     const response = await api.post('/update-match-score', payload);
 
     if (response.status === 200) {
@@ -111,14 +108,14 @@ const initializeWinners = () => {
   reactiveRounds.forEach((round, roundIndex) => {
     round.matchs.forEach((match) => {
       if (match.team1.score != null && match.team2.score != null) {
-        console.log("caca");
-        updateWinner(match, roundIndex);
+        updateWinner(match, roundIndex, true);
       }
     });
   });
 };
 
 onMounted(() => {
+  initializeWinners();
 });
 </script>
 
