@@ -1,23 +1,54 @@
 <template>
-<div class="tree-wrapper">
-  <div class="title text-h5">{{ name }}</div>
-  <div class="tree-container">
-    <div v-for="(round, roundIndex) in rounds" :key="roundIndex" class="round">
-      <div v-for="match in round.matchs" :key="match.id" class="match">
-        <div class="match-line">
-          <div class="team" :class="{ 'winner': match.winner === match.team1.id }">
-            <span>{{ match.team1.name }}</span>
-            <span :class="{ 'score-winner': match.winner === match.team1.id, 'score-looser': match.winner !== match.team1.id }">{{ match.team1.score }}</span>
-          </div>
-          <div class="team" :class="{ 'winner': match.winner === match.team2.id }">
-            <span>{{ match.team2.name }}</span>
-            <span :class="{ 'score-winner': match.winner === match.team2.id, 'score-looser': match.winner !== match.team2.id }">{{ match.team2.score }}</span>
+  <div class="tree-wrapper">
+    <div class="title text-h5">{{ name }}</div>
+    <div class="tree-container">
+      <div v-for="(round, roundIndex) in rounds" :key="roundIndex" class="round">
+        <div v-for="match in round.matchs" :key="match.id" class="match">
+          <div class="match-line">
+            <!-- Team 1 -->
+            <div
+              class="team"
+              :class="{
+                'winner': match.winner === 'player1',
+                'not-set': match.team1.name === 'Non attribué'
+              }"
+            >
+              <span>{{ match.team1.name }}</span>
+              <span
+                :class="{
+                  'score-winner': match.winner === 'player1',
+                  'score-looser': match.winner !== 'player1',
+                  'score-not-set': match.team1.name === 'Non attribué' || match.team1.score === null
+                }"
+              >
+                {{ match.team1.score }}
+              </span>
+            </div>
+
+            <!-- Team 2 -->
+            <div
+              class="team"
+              :class="{
+                'winner': match.winner === 'player2',
+                'not-set': match.team2.name === 'Non attribué'
+              }"
+            >
+              <span>{{ match.team2.name }}</span>
+              <span
+                :class="{
+                  'score-winner': match.winner === 'player2',
+                  'score-looser': match.winner !== 'player2',
+                  'score-not-set': match.team2.name === 'Non attribué' || match.team2.score === null
+                }"
+              >
+                {{ match.team2.score }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script setup>
@@ -29,8 +60,6 @@ const props = defineProps({
   },
 });
 
-console.log(props.rounds[1]);
-console.log(props.rounds[2]);
 </script>
 
 <style scoped>
@@ -97,4 +126,12 @@ console.log(props.rounds[2]);
   color: white;
 }
 
+.not-set {
+  background-color: #d3d3d3 !important; /* Light grey background */
+  color: #a0a0a0; /* Grey text */
+}
+
+.score-not-set {
+  background-color: #d3d3d3 !important; /* Light grey background */
+}
 </style>

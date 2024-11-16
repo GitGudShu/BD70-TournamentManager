@@ -13,12 +13,23 @@
         Nombre d'équipes en playoff : {{ tournament.playoffTeams }}<br />
       </div>
 
-      <TTP
-        v-if="rounds_mapped"
-        :name="tournament.tournament_name"
-        :rounds="rounds_mapped"
-        @request-rounds-update="fetchMatchDetails"
-      />
+
+      <template v-if="userRole == 'Organisateur'">
+        <TTP
+          v-if="rounds_mapped"
+          :name="tournament.tournament_name"
+          :rounds="rounds_mapped"
+          @request-rounds-update="fetchMatchDetails"
+        />
+      </template>
+      <template v-else>
+        <Tree
+          v-if="rounds_mapped"
+          :name="tournament.tournament_name"
+          :rounds="rounds_mapped"
+        />
+      </template>
+
 
     </div>
     <div v-else>
@@ -29,13 +40,18 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { api } from 'src/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import TTP from 'src/components/TournamentTreeProgress.vue';
+import Tree from 'src/components/TournamentTree.vue';
+import { useAuthStore } from 'src/stores/authStore';
 
 const route = useRoute();
 const router = useRouter();
+
+const authStore = useAuthStore();
+const userRole = computed(() => authStore.userRole);
 
 const tournament = ref(null);
 const rounds_mapped = ref(null);
@@ -48,23 +64,6 @@ const tournamentTypes = [
     { label: 'Championnat puis playoffs', value: 5 },
     { label: 'Phases de groupes', value: 6 },
 ];
-
-const getRoundName = (roundNumber, totalRounds) => {
-    const totalParticipants = tournament.value?.nb_participants || 0;
-    const participantsInThisRound = totalParticipants / Math.pow(2, roundNumber - 1);
-
-    if (participantsInThisRound >= 16) {
-        return `${participantsInThisRound}èmes de finale`;
-    } else if (participantsInThisRound === 8) {
-        return "Quarts de finale";
-    } else if (participantsInThisRound === 4) {
-        return "Demi-finale";
-    } else if (participantsInThisRound === 2) {
-        return "Finale";
-    } else {
-        return `Round ${roundNumber}`;
-    }
-};
 
 
 const getTournamentType = (typeId) => {
@@ -99,6 +98,25 @@ onMounted(() => {
   fetchTournamentDetails();
   fetchMatchDetails();
 });
+
+
+// Method to use if we have time
+const getRoundName = (roundNumber, totalRounds) => {
+    const totalParticipants = tournament.value?.nb_participants || 0;
+    const participantsInThisRound = totalParticipants / Math.pow(2, roundNumber - 1);
+
+    if (participantsInThisRound >= 16) {
+        return `${participantsInThisRound}èmes de finale`;
+    } else if (participantsInThisRound === 8) {
+        return "Quarts de finale";
+    } else if (participantsInThisRound === 4) {
+        return "Demi-finale";
+    } else if (participantsInThisRound === 2) {
+        return "Finale";
+    } else {
+        return `Round ${roundNumber}`;
+    }
+};
 </script>
 
 

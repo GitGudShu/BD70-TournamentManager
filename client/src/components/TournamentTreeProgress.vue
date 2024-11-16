@@ -64,7 +64,7 @@ watch(
   (newRounds) => {
     // Update reactiveRounds with the new schema
     reactiveRounds.splice(0, reactiveRounds.length, ...JSON.parse(JSON.stringify(newRounds)));
-    console.log('reactiveRounds updated:', reactiveRounds);
+    // console.log('reactiveRounds updated:', reactiveRounds);
   },
   { deep: true } // Ensures nested changes are tracked
 );

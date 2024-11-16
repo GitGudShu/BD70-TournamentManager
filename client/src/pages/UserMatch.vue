@@ -8,10 +8,7 @@
       </div>
 
       <template v-if="yourTournaments && yourTournaments.length === 0">
-        <div class="huh">
-          <img src="nothing.png" alt="confused cat" class="huh-img">
-          <div class="huh-message text-primary">Tu ne t'es inscrit à aucun tournoi, meow...</div>
-        </div>
+        <Impossible message="Tu ne t'es inscrit à aucun tournois meow..." />
       </template>
       <template v-else>
 
@@ -43,8 +40,8 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
-import { useRouter } from 'vue-router';
 import Card from 'src/components/Card.vue';
+import Impossible from 'src/components/Impossible.vue';
 
 const yourTournaments = ref([]);
 
@@ -77,7 +74,7 @@ const fetchTournaments = async () => {
   try {
     const response = await api.get('/getTournaments');
     yourTournaments.value = response.data;
-    console.log(yourTournaments.value);
+    // console.log("Your tournaments: ", yourTournaments.value);
   } catch (error) {
     console.error("Fetch tournaments failed", error);
   }
@@ -130,27 +127,5 @@ onMounted(() => {
   gap: 1em;
   justify-content: space-evenly;
   align-items: center;
-}
-
-/* HUH Image */
-
-.huh {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2em;
-}
-
-.huh-img {
-  height: 200px;
-}
-
-.huh-message {
-  margin-left: 1em;
-  border: .2em solid var(--sad-nightblue);
-  border-radius: .5em;
-  padding: 1em;
-  background-color: aliceblue;
-  max-width: 200px;
 }
 </style>

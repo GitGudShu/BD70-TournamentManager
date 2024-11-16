@@ -11,24 +11,31 @@
         Nos Tournois Disponibles
       </div>
 
-      <div class="row">
-        <template v-for="tournament in allTournaments" :key="tournament.tournament_id">
-          <Card
-            :title="tournament.tournament_name"
-            :state="getTournamentState(tournament.start_date, tournament.end_date)"
-            :dates="`${new Date(tournament.start_date).toLocaleDateString()} - ${new Date(tournament.end_date).toLocaleDateString()}`"
-            :xid="tournament.tournament_id"
-            :content="`
-              Jeu: ${getGameDetails(tournament.game_id).name} <br>
-              Participants: ${tournament.nb_participants} <br>
-              Type: ${getTournamentType(tournament.tournament_type)}
-            `"
-            :image="getGameDetails(tournament.game_id).image"
-            type="tournament"
-            style="max-width: 60%;"
-          />
-        </template>
-      </div>
+      <template v-if="allTournaments && allTournaments.length === 0">
+        <Impossible message="Aucun tournoi n'est disponible pour le moment..." />
+      </template>
+
+      <template v-else>
+        <div class="row">
+          <template v-for="tournament in allTournaments" :key="tournament.tournament_id">
+            <Card
+              :title="tournament.tournament_name"
+              :state="getTournamentState(tournament.start_date, tournament.end_date)"
+              :dates="`${new Date(tournament.start_date).toLocaleDateString()} - ${new Date(tournament.end_date).toLocaleDateString()}`"
+              :xid="tournament.tournament_id"
+              :content="`
+                Jeu: ${getGameDetails(tournament.game_id).name} <br>
+                Participants: ${tournament.nb_participants} <br>
+                Type: ${getTournamentType(tournament.tournament_type)}
+              `"
+              :image="getGameDetails(tournament.game_id).image"
+              type="tournament"
+              style="max-width: 60%;"
+            />
+          </template>
+        </div>
+      </template>
+
     </div>
   </q-page>
 </template>
