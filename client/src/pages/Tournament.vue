@@ -25,6 +25,7 @@
             `"
             :image="getGameDetails(tournament.game_id).image"
             type="tournament"
+            style="max-width: 60%;"
           />
         </template>
       </div>

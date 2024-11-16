@@ -17,6 +17,7 @@
         v-if="rounds_mapped"
         :name="tournament.tournament_name"
         :rounds="rounds_mapped"
+        @request-rounds-update="fetchMatchDetails"
       />
 
     </div>

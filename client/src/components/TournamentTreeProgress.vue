@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, watch, onMounted } from 'vue';
 import { api } from 'src/boot/axios';
 
 const props = defineProps({
@@ -56,6 +56,23 @@ const props = defineProps({
 const activeRound = ref(1);
 const reactiveRounds = reactive(JSON.parse(JSON.stringify(props.rounds)));
 
+const emit = defineEmits(['requestRoundsUpdate']);
+
+// Watch for changes in the rounds prop
+watch(
+  () => props.rounds,
+  (newRounds) => {
+    // Update reactiveRounds with the new schema
+    reactiveRounds.splice(0, reactiveRounds.length, ...JSON.parse(JSON.stringify(newRounds)));
+    console.log('reactiveRounds updated:', reactiveRounds);
+  },
+  { deep: true } // Ensures nested changes are tracked
+);
+
+const requestRoundsUpdate = () => {
+  emit('requestRoundsUpdate'); // Emit the event to the parent file using the component
+};
+
 const updateWinner = (match, roundIndex, skipApiUpdate = false) => {
   if (match.team1.score > match.team2.score) {
     match.winner = match.team1.id;
@@ -67,7 +84,9 @@ const updateWinner = (match, roundIndex, skipApiUpdate = false) => {
 
   // Skip API call if it's during initialization
   if (!skipApiUpdate) {
-    updateScore(match, roundIndex);
+    updateScore(match, roundIndex).then(() => {
+      requestRoundsUpdate();
+    });
   }
 
   // Check if all matches are complete
