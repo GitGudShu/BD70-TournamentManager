@@ -30,6 +30,12 @@
         />
       </template>
 
+      <Table
+        v-if="rounds_mapped"
+        :columns="rankingColumns"
+        :rows="rankingData"
+        title="Classement du tournoi"
+      />
 
     </div>
     <div v-else>
@@ -45,6 +51,7 @@ import { api } from 'src/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import TTP from 'src/components/TournamentTreeProgress.vue';
 import Tree from 'src/components/TournamentTree.vue';
+import Table from 'src/components/Ranking.vue';
 import { useAuthStore } from 'src/stores/authStore';
 
 const route = useRoute();
@@ -98,6 +105,76 @@ onMounted(() => {
   fetchTournamentDetails();
   fetchMatchDetails();
 });
+
+// Ranking mock data (to replace with a request from the server getting the actual ranking DYNAMICALLY)
+const rankingColumns = [
+  {
+    name: "rank",
+    align: "center",
+    label: "Rang",
+    field: "rank",
+    sortable: true,
+  },
+  {
+    name: "name",
+    align: "left",
+    label: "Joueur",
+    field: "name",
+    sortable: true,
+  },
+  {
+    name: "points",
+    align: "center",
+    label: "Points",
+    field: "points",
+    sortable: true,
+  },
+  {
+    name: "wins",
+    align: "center",
+    label: "Victoires",
+    field: "wins",
+    sortable: true,
+  },
+  {
+    name: "status",
+    align: "center",
+    label: "Status",
+    field: "status",
+    sortable: true,
+  },
+];
+
+const rankingData = [
+  {
+    rank: 1,
+    name: "Lewis Hamilton",
+    points: 350,
+    wins: 8,
+    status: "En attente du prochain round...",
+  },
+  {
+    rank: 2,
+    name: "Max Verstappen",
+    points: 330,
+    wins: 6,
+    status: "Perdu",
+  },
+  {
+    rank: 3,
+    name: "Charles Leclerc",
+    points: 290,
+    wins: 5,
+    status: "En duel",
+  },
+  {
+    rank: 4,
+    name: "Sebastian Vettel",
+    points: 270,
+    wins: 4,
+    status: "En duel",
+  },
+];
 
 
 // Method to use if we have time
