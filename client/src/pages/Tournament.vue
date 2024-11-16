@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { api } from 'src/boot/axios';
 import Card from 'src/components/Card.vue';
 
@@ -60,10 +60,23 @@ const getTournamentState = (startDate, endDate) => {
   return "En cours";
 };
 
-// Formater les dates pour l'affichage
-const formatDateRange = (startDate, endDate) => {
-  return `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}`;
-};
+const upcomingTournaments = computed(() =>
+  allTournaments.value.filter(tournament =>
+    getTournamentState(tournament.start_date, tournament.end_date) === "À venir"
+  )
+);
+
+const ongoingTournaments = computed(() =>
+  allTournaments.value.filter(tournament =>
+    getTournamentState(tournament.start_date, tournament.end_date) === "En cours"
+  )
+);
+
+const completedTournaments = computed(() =>
+  allTournaments.value.filter(tournament =>
+    getTournamentState(tournament.start_date, tournament.end_date) === "Terminé"
+  )
+);
 
 // Obtenir le type de tournoi
 const getTournamentType = (typeId) => {

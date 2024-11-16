@@ -94,35 +94,6 @@ const fetchMatchDetails = async () => {
     }
 };
 
-const roundsTest = [
-  {
-    matchs: [
-      {
-        id: 1,
-        team1: { id: 1, name: "Team A", score: 1 },
-        team2: { id: 2, name: "Team B", score: 2 },
-        winner: null,
-      },
-      {
-        id: 2,
-        team1: { id: 3, name: "Team C", score: null },
-        team2: { id: 4, name: "Team D", score: null },
-        winner: null,
-      },
-    ],
-  },
-  {
-    matchs: [
-      {
-        id: 3,
-        team1: { id: 1, name: "Winner of Match 1", score: null },
-        team2: { id: 3, name: "Winner of Match 2", score: null },
-        winner: null,
-      },
-    ],
-  },
-];
-
 onMounted(() => {
   fetchTournamentDetails();
   fetchMatchDetails();

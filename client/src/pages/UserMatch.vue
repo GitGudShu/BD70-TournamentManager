@@ -46,7 +46,6 @@ import { api } from 'src/boot/axios';
 import { useRouter } from 'vue-router';
 import Card from 'src/components/Card.vue';
 
-const router = useRouter();
 const yourTournaments = ref([]);
 
 const tournamentTypes = [
@@ -97,11 +96,6 @@ return "En cours";
 const getTournamentType = (typeId) => {
 const type = tournamentTypes.find(t => t.value === typeId);
   return type ? type.label : 'Type inconnu';
-};
-
-const goToTournamentDetails = (tournamentId) => {
-  // console.log(tournamentId)
-  router.push(`/tournament/${tournamentId}`);
 };
 
 onMounted(() => {
