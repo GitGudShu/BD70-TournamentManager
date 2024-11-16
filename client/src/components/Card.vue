@@ -1,7 +1,7 @@
 <template>
   <div class="card-wrapper">
     <q-card class="main-container" flat bordered>
-      <q-card-section horizontal>
+      <q-card-section horizontal class="container">
         <q-card-section>
           <template v-if="type === 'tournament' || type === 'tournament-details'">
             <div class="text-overline text-secondary"> {{ state }}</div>
@@ -130,6 +130,11 @@ const goToTournamentDetails = (tournamentId) => {
 
 .main-container {
   background-color: var(--sad-nightblue);
+}
+
+.main-container .container {
+  display: flex;
+  justify-content: space-between;
 }
 
 </style>
