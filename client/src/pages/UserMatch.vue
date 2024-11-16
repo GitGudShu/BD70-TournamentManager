@@ -17,38 +17,6 @@
 
         <div class="row">
           <template v-for="tournament in yourTournaments" :key="tournament.tournament_id">
-            <q-card
-              class="my-card"
-              :flat="true"
-              :bordered="true"
-            >
-              <q-card-section>
-                <div class="text-h6">{{ tournament.tournament_name }}</div>
-                <div class="text-subtitle2">{{ getTournamentType(tournament.tournament_type) }}</div>
-                <div class="text-body1">Participants: {{ tournament.nb_participants }}</div>
-                <div class="text-body2">
-                  <strong>Dates:</strong>
-                  {{ new Date(tournament.start_date).toLocaleDateString() }} -
-                  {{ new Date(tournament.end_date).toLocaleDateString() }}
-                </div>
-                <div class="text-body2">
-                  <strong>Status:</strong> {{ getTournamentState(tournament.start_date, tournament.end_date) }}
-                </div>
-              </q-card-section>
-
-              <q-card-actions>
-                <q-btn
-                  flat
-                  label="Voir les détails"
-                  @click="goToTournamentDetails(tournament.tournament_id)"
-                />
-              </q-card-actions>
-            </q-card>
-          </template>
-        </div>
-
-        <div class="row">
-          <template v-for="tournament in yourTournaments" :key="tournament.tournament_id">
             <Card
               :title="tournament.tournament_name"
               :state="getTournamentState(tournament.start_date, tournament.end_date)"
