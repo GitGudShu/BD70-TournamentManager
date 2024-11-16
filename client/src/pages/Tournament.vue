@@ -1,13 +1,34 @@
 <template>
   <q-page>
     <div class="wrapper">
+      <div class="text-h3 text-center">Tournois</div>
 
-      <div class="text-h4 text-center text-primary text-bold">TOURNOIS</div>
-
-      <div class="tree-container">
-        <TournamentTree name="Tournoi de test" :rounds="testRounds"/>
+      <div class="text-subtitle1 text-center welcome-message">
+        Découvrez tous nos tournois et rejoignez la compétition !
       </div>
 
+      <div class="text-h5 text-center tournament-section-title">
+        Nos Tournois Disponibles
+      </div>
+
+      <div class="row">
+        <template v-for="tournament in allTournaments" :key="tournament.tournament_id">
+          <Card
+            :title="tournament.tournament_name"
+            :state="getTournamentState(tournament.start_date, tournament.end_date)"
+            :dates="`${new Date(tournament.start_date).toLocaleDateString()} - ${new Date(tournament.end_date).toLocaleDateString()}`"
+            :xid="tournament.tournament_id"
+            :content="`
+              Jeu: ${getGameDetails(tournament.game_id).name} <br>
+              Participants: ${tournament.nb_participants} <br>
+              Type: ${getTournamentType(tournament.tournament_type)}
+            `"
+            :image="getGameDetails(tournament.game_id).image"
+            type="tournament"
+            style="max-width: 50%;"
+          />
+        </template>
+      </div>
     </div>
   </q-page>
 </template>
@@ -15,82 +36,74 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
-import TournamentTree from 'src/components/TournamentTree.vue';
+import Card from 'src/components/Card.vue';
 
-const allGames = ref([]);
-const testRounds = [
-//Quarter
-  {
-    matchs: [
-      {
-        id: "match1",
-        winner: "1",
-        team1: { id: "1", name: "Competitor 1", score: 2 },
-        team2: { id: "2", name: "Competitor 2", score: 1 },
-      },
-      {
-        id: "match2",
-        winner: "4",
-        team1: { id: "3", name: "Competitor 3", score: 0 },
-        team2: { id: "4", name: "Competitor 4", score: 2 },
-      },
-      {
-        id: "match3",
-        winner: "5",
-        team1: { id: "5", name: "Competitor 5", score: 2 },
-        team2: { id: "6", name: "Competitor 6", score: 1 },
-      },
-      {
-        id: "match4",
-        winner: "8",
-        team1: { id: "7", name: "Competitor 7", score: 0 },
-        team2: { id: "8", name: "Competitor 8", score: 2 },
-      },
-    ],
-  },
-  //Semi
-  {
-    matchs: [
-      {
-        id: "match5",
-        winner: "4",
-        team1: { id: "1", name: "Competitor 1", score: 1 },
-        team2: { id: "4", name: "Competitor 4", score: 2 },
-      },
-      {
-        id: "match6",
-        winner: "8",
-        team1: { id: "5", name: "Competitor 5", score: 1 },
-        team2: { id: "8", name: "Competitor 8", score: 2 },
-      },
-    ],
-  },
-  //Final
-  {
-    matchs: [
-      {
-        id: "any_match_id",
-        winner: "8",
-        team1: { id: "4", name: "Competitor 4", score: 1 },
-        team2: { id: "8", name: "Competitor 8", score: 3 },
-      },
-    ],
-  },
-];
+const allTournaments = ref([]);
+
+// Récupérer la liste des tournois
+const fetchTournaments = async () => {
+  try {
+    const response = await api.get('/getTournaments');
+    allTournaments.value = response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des tournois", error);
+  }
+};
+
+// Obtenir l'état du tournoi
+const getTournamentState = (startDate, endDate) => {
+  const today = new Date();
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (today < start) return "À venir";
+  if (today > end) return "Terminé";
+  return "En cours";
+};
+
+// Formater les dates pour l'affichage
+const formatDateRange = (startDate, endDate) => {
+  return `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}`;
+};
+
+// Obtenir le type de tournoi
+const getTournamentType = (typeId) => {
+  const tournamentTypes = [
+    { label: 'Arbre unique', value: 1 },
+    { label: 'Ronde suisse + élimination directe', value: 2 },
+    { label: 'Winner/Looser bracket', value: 3 },
+    { label: 'Championnat', value: 4 },
+    { label: 'Championnat puis playoffs', value: 5 },
+    { label: 'Phases de groupes', value: 6 },
+  ];
+  const type = tournamentTypes.find(t => t.value === typeId);
+  return type ? type.label : 'Type inconnu';
+};
+
+// Détails des jeux
+const getGameDetails = (gameId) => {
+  const gameImageMap = {
+    1: { name: 'Les échecs', image: '/games/chess.jpg' },
+    2: { name: 'Othello', image: '/games/othello.jpg' },
+    3: { name: 'Catane', image: '/games/catan.jpg' },
+    4: { name: 'Go', image: '/games/go.jpg' },
+    5: { name: 'Shogi', image: '/games/shogi.jpg' },
+    6: { name: 'Carcassonne', image: '/games/carcassone.jpg' },
+    7: { name: 'Puissance 4', image: '/games/connect4.jpg' },
+    8: { name: 'Risk', image: '/games/risk.jpg' },
+    9: { name: 'Scrabble', image: '/games/scrabble.jpg' },
+    10: { name: 'Dames', image: '/games/draughts.jpg' },
+  };
+  return gameImageMap[gameId] || { name: 'Unknown Game', image: '/placeholder.png' };
+};
 
 onMounted(() => {
-  try {
-    // fetch something
-  }
-  catch (error) {
-    console.log(error);
-  }
+  fetchTournaments();
 });
 
 </script>
 
 <style scoped>
-
 .wrapper {
   display: flex;
   justify-content: center;
@@ -98,18 +111,32 @@ onMounted(() => {
   gap: 1em;
   width: 70%;
   margin: 1em auto;
-  height: 100%;
   background-color: var(--sad-secondary);
   border-radius: .5em;
   padding: 1.5em;
 }
 
-.row {
+.tournament-list {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 1em;
-  justify-content: space-evenly;
-  align-items: center;
 }
 
+.tournament-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  border: 1px solid #ddd;
+  border-radius: .5em;
+  background-color: #fff;
+}
+
+.tournament-details {
+  flex: 1;
+}
+
+.participate-button {
+  margin-left: 1em;
+}
 </style>

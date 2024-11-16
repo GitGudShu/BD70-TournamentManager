@@ -4,10 +4,10 @@ import Login from 'pages/Login.vue';
 import CreatePlayer from 'pages/forms/CreatePlayer.vue';
 import UpdateProfile from 'pages/forms/UpdateProfile.vue';
 import Statistics from 'src/pages/Statistics.vue';
-import Tournament from 'src/pages/TournamentList.vue';
+import Tournament from 'src/pages/Tournament.vue';
 import CreateTournament from 'pages/forms/CreateTournament.vue';
-import Match from 'src/pages/Match.vue';
-import TournamentDetails from 'src/pages/TournamentDetail.vue'; 
+import Match from 'src/pages/UserMatch.vue';
+import TournamentDetails from 'src/pages/TournamentDetail.vue';
 
 
 const routes = [
@@ -46,8 +46,8 @@ const routes = [
       },
       {
         path: 'tournament/:tournamentId',
-        component: TournamentDetails,     
-        props: true        
+        component: TournamentDetails,
+        props: true
       }
     ]
   },
