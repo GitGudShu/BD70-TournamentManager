@@ -25,7 +25,6 @@
             `"
             :image="getGameDetails(tournament.game_id).image"
             type="tournament"
-            style="max-width: 50%;"
           />
         </template>
       </div>
@@ -116,27 +115,12 @@ onMounted(() => {
   padding: 1.5em;
 }
 
-.tournament-list {
+.row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1em;
-}
-
-.tournament-item {
-  display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-  padding: 1em;
-  border: 1px solid #ddd;
-  border-radius: .5em;
-  background-color: #fff;
 }
 
-.tournament-details {
-  flex: 1;
-}
-
-.participate-button {
-  margin-left: 1em;
-}
 </style>

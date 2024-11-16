@@ -3,7 +3,7 @@
     <q-card class="main-container" flat bordered>
       <q-card-section horizontal>
         <q-card-section>
-          <template v-if="type === 'tournament'">
+          <template v-if="type === 'tournament' || type === 'tournament-details'">
             <div class="text-overline text-secondary"> {{ state }}</div>
           </template>
           <div class="text-h5 q-mt-sm q-mb-xs text-accent"> {{ title }}</div>
@@ -18,7 +18,7 @@
         </q-card-section>
       </q-card-section>
 
-      <template v-if="type === 'tournament'">
+      <template v-if="type === 'tournament' || type === 'tournament-details'">
         <q-separator color="accent" />
 
         <q-card-actions style="display: flex; justify-content: space-between;">
@@ -29,9 +29,28 @@
             </q-btn>
           </div>
 
-          <q-btn flat color="primary" class="bg-accent" @click="participateInTournament(xid)">
-            Participer
-          </q-btn>
+          <template v-if="userRole === 'Joueur'">
+            <template v-if="type === 'tournament'">
+              <div style="display: flex; gap: 1em;">
+                <q-btn flat color="primary" class="bg-accent" @click="participateInTournament(xid)">
+                  Participer
+                </q-btn>
+                <q-btn flat color="primary" class="bg-accent" @click="goToTournamentDetails(xid)">
+                  Voir les détails
+                </q-btn>
+              </div>
+            </template>
+            <template v-else>
+              <q-btn flat color="primary" class="bg-accent" @click="goToTournamentDetails(xid)">
+                Voir les détails
+              </q-btn>
+            </template>
+          </template>
+          <template v-else>
+            <q-btn flat color="primary" class="bg-accent" @click="goToTournamentDetails(xid)">
+              Configuration
+            </q-btn>
+          </template>
         </q-card-actions>
       </template>
 
@@ -44,9 +63,13 @@
 import { computed } from 'vue';
 import { api } from 'src/boot/axios';
 import { useAuthStore } from 'src/stores/authStore';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const authStore = useAuthStore();
 const playerId = computed(() => authStore.playerId);
+const userRole = computed(() => authStore.userRole);
 
 const props = defineProps({
   title: String,
@@ -74,6 +97,11 @@ const participateInTournament = async (tournamentId) => {
     console.error("Erreur de participation", error);
     // Gestion d'erreur : afficher un message d'erreur à l'utilisateur
   }
+};
+
+const goToTournamentDetails = (tournamentId) => {
+  // console.log(tournamentId)
+  router.push(`/tournament/${tournamentId}`);
 };
 
 

@@ -6,17 +6,27 @@
 
       <div class="nav-items">
         <router-link v-for="page in pages" :key="page.path" :to="page.path" class="nav-link"  exact>
+
           <template v-if="page.name === 'CREER UN TOURNOI'">
             <!-- Only display this section if userRole is "Organisateur" -->
             <q-item-section v-if="userRole === 'Organisateur'">
               {{ page.name }}
             </q-item-section>
           </template>
+
+          <template v-else-if="page.name === 'VOS MATCHS'">
+            <!-- Only display this section if userRole is "Joueur" -->
+            <q-item-section v-if="userRole === 'Joueur'">
+              {{ page.name }}
+            </q-item-section>
+          </template>
+
           <template v-else>
             <q-item-section>
               {{ page.name }}
             </q-item-section>
           </template>
+
         </router-link>
       </div>
 
