@@ -95,9 +95,27 @@ const fetchMatchDetails = async () => {
     try {
         const response = await api.get(`/getFormattedTournaments/${tournamentId}`);
         rounds_mapped.value = response.data;
-        console.log("Fetched Rounds:", rounds_mapped.value);
+        // console.log("Fetched Rounds:", rounds_mapped.value);
+
+        // Get ranking data
+        fetchRankings();
     } catch (error) {
         console.error("Failed to fetch round details:", error);
+    }
+};
+
+const rankingData = ref([]);
+
+// Method for you Bilel (fetch rankings)
+const fetchRankings = async () => {
+    const tournamentId = route.params.tournamentId;
+    try {
+        // Replace this with the actual endpoint to fetch the rankings
+        const response = await api.get(`/getRanking/${tournamentId}`);
+        rankingData.value = response.data;
+        // console.log("Fetched Rankings:", rankingData.value);
+    } catch (error) {
+        console.error("Failed to fetch rankings:", error);
     }
 };
 
@@ -106,7 +124,6 @@ onMounted(() => {
   fetchMatchDetails();
 });
 
-// Ranking mock data (to replace with a request from the server getting the actual ranking DYNAMICALLY)
 const rankingColumns = [
   {
     name: "rank",
@@ -123,13 +140,6 @@ const rankingColumns = [
     sortable: true,
   },
   {
-    name: "points",
-    align: "center",
-    label: "Points",
-    field: "points",
-    sortable: true,
-  },
-  {
     name: "wins",
     align: "center",
     label: "Victoires",
@@ -142,37 +152,6 @@ const rankingColumns = [
     label: "Status",
     field: "status",
     sortable: true,
-  },
-];
-
-const rankingData = [
-  {
-    rank: 1,
-    name: "Lewis Hamilton",
-    points: 350,
-    wins: 8,
-    status: "En attente du prochain round...",
-  },
-  {
-    rank: 2,
-    name: "Max Verstappen",
-    points: 330,
-    wins: 6,
-    status: "Perdu",
-  },
-  {
-    rank: 3,
-    name: "Charles Leclerc",
-    points: 290,
-    wins: 5,
-    status: "En duel",
-  },
-  {
-    rank: 4,
-    name: "Sebastian Vettel",
-    points: 270,
-    wins: 4,
-    status: "En duel",
   },
 ];
 

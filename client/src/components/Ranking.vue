@@ -57,6 +57,7 @@
           :color="
             props.row.status === 'En attente du prochain round...' ? 'green' :
             props.row.status === 'Perdu' ? 'red' :
+            props.row.status === 'Champion' ? 'blue' :
             props.row.status === 'En duel' ? 'orange' :
             'grey'
           "
@@ -103,6 +104,7 @@
                 :color="
                   props.row.status === 'En attente du prochain round...' ? 'green' :
                   props.row.status === 'Perdu' ? 'red' :
+                  props.row.status === 'Champion' ? 'blue' :
                   props.row.status === 'En duel' ? 'orange' :
                   'grey'
                 "

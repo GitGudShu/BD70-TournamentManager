@@ -333,8 +333,8 @@ END //
 
 DELIMITER ;
 
+-- This transaction is used to update the result of a match, it updates the scores of the players and determines the winner
 DELIMITER //
-
 CREATE PROCEDURE UpdateMatchResult(
     IN p_match_id INT,
     IN p_player1_id INT,
@@ -346,32 +346,58 @@ CREATE PROCEDURE UpdateMatchResult(
 BEGIN
     DECLARE winner_id INT;
 
-    -- Mettre à jour les scores dans PlayerMatch
+    -- Step 1: Update scores in PlayerMatch
     UPDATE PlayerMatch
-    SET score = p_score1
+    SET score = p_score1, status = 1 -- Mark player as actively competing
     WHERE match_id = p_match_id AND player_id = p_player1_id;
 
     UPDATE PlayerMatch
-    SET score = p_score2
+    SET score = p_score2, status = 1 -- Mark player as actively competing
     WHERE match_id = p_match_id AND player_id = p_player2_id;
 
-    -- Déterminer le gagnant en fonction des scores
+    -- Step 2: Determine winner based on scores
     IF p_score1 > p_score2 THEN
         SET winner_id = p_player1_id;
+
+        -- Update player statuses: Winner and Loser
+        UPDATE PlayerMatch
+        SET status = 2 -- Winner
+        WHERE match_id = p_match_id AND player_id = p_player1_id;
+
+        UPDATE PlayerMatch
+        SET status = 3 -- Loser
+        WHERE match_id = p_match_id AND player_id = p_player2_id;
+
     ELSEIF p_score2 > p_score1 THEN
         SET winner_id = p_player2_id;
+
+        -- Update player statuses: Winner and Loser
+        UPDATE PlayerMatch
+        SET status = 2 -- Winner
+        WHERE match_id = p_match_id AND player_id = p_player2_id;
+
+        UPDATE PlayerMatch
+        SET status = 3 -- Loser
+        WHERE match_id = p_match_id AND player_id = p_player1_id;
+
     ELSE
-        SET winner_id = NULL; -- Match nul ou autres règles
+        SET winner_id = NULL; -- Draw or unresolved case
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Draws are not supported in this procedure.';
     END IF;
 
-    -- Ajouter le gagnant au prochain match
+    -- Step 3: Update Matchmaking status to "completed"
+    UPDATE Matchmaking
+    SET status = 2 -- Match completed
+    WHERE match_id = p_match_id;
+
+    -- Step 4: Insert winner into the next match, if applicable
     IF winner_id IS NOT NULL AND p_next_match_id IS NOT NULL THEN
         INSERT INTO PlayerMatch (player_id, match_id, score, status)
-        VALUES (winner_id, p_next_match_id, NULL, 0); -- Le score est NULL pour le moment
+        VALUES (winner_id, p_next_match_id, NULL, 0); -- Score is NULL, status is default
     END IF;
 END //
-
 DELIMITER ;
+
 
 -- procedures mockées
 CALL GenerateTournamentRoundsForType1(1, 4);
