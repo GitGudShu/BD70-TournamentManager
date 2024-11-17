@@ -11,13 +11,46 @@
         Nos Tournois Disponibles
       </div>
 
+      <div class="filters">
+  <q-input
+    filled
+    v-model="filters.name"
+    label="Nom du tournoi"
+    debounce="300"
+    @input="filterTournaments"
+  />
+  <q-select
+    filled
+    v-model="filters.game"
+    :options="gameOptionsWithNone"
+    label="Jeu"
+    @input="filterTournaments"
+  />
+  <q-select
+    filled
+    v-model="filters.state"
+    :options="stateOptionsWithNone"
+    label="État"
+    @input="filterTournaments"
+  />
+  <q-btn label="Filtrer" @click="filterTournaments" color="primary" 
+  class="full-width"/>
+  <q-btn
+  label="Réinitialiser les filtres"
+  color="secondary"
+  @click="resetFilters"
+  class="full-width"
+  />
+
+</div>
+
       <template v-if="allTournaments && allTournaments.length === 0">
         <Impossible message="Aucun tournoi n'est disponible pour le moment..." />
       </template>
 
       <template v-else>
         <div class="row">
-          <template v-for="tournament in allTournaments" :key="tournament.tournament_id">
+          <template v-for="tournament in filteredTournaments" :key="tournament.tournament_id">
             <Card
               :title="tournament.tournament_name"
               :state="getTournamentState(tournament.start_date, tournament.end_date)"
@@ -46,12 +79,38 @@ import { api } from 'src/boot/axios';
 import Card from 'src/components/Card.vue';
 
 const allTournaments = ref([]);
+const filteredTournaments = ref([]);
+const filters = ref({
+  name: '',
+  game: null,
+  state: null
+});
+
+const gameOptions = [
+  { label: 'Les échecs', value: 1 },
+  { label: 'Othello', value: 2 },
+  { label: 'Catane', value: 3 },
+  { label: 'Go', value: 4 },
+  { label: 'Shogi', value: 5 },
+  { label: 'Carcassonne', value: 6 },
+  { label: 'Puissance 4', value: 7 },
+  { label: 'Risk', value: 8 },
+  { label: 'Scrabble', value: 9 },
+  { label: 'Dames', value: 10 }
+];
+
+const stateOptions = [
+  { label: 'À venir', value: 'À venir' },
+  { label: 'En cours', value: 'En cours' },
+  { label: 'Terminé', value: 'Terminé' }
+];
 
 // Récupérer la liste des tournois
 const fetchTournaments = async () => {
   try {
     const response = await api.get('/getTournaments');
     allTournaments.value = response.data;
+    filteredTournaments.value = [...allTournaments.value];
   } catch (error) {
     console.error("Erreur lors de la récupération des tournois", error);
   }
@@ -67,24 +126,6 @@ const getTournamentState = (startDate, endDate) => {
   if (today > end) return "Terminé";
   return "En cours";
 };
-
-const upcomingTournaments = computed(() =>
-  allTournaments.value.filter(tournament =>
-    getTournamentState(tournament.start_date, tournament.end_date) === "À venir"
-  )
-);
-
-const ongoingTournaments = computed(() =>
-  allTournaments.value.filter(tournament =>
-    getTournamentState(tournament.start_date, tournament.end_date) === "En cours"
-  )
-);
-
-const completedTournaments = computed(() =>
-  allTournaments.value.filter(tournament =>
-    getTournamentState(tournament.start_date, tournament.end_date) === "Terminé"
-  )
-);
 
 // Obtenir le type de tournoi
 const getTournamentType = (typeId) => {
@@ -117,6 +158,31 @@ const getGameDetails = (gameId) => {
   return gameImageMap[gameId] || { name: 'Unknown Game', image: '/placeholder.png' };
 };
 
+const gameOptionsWithNone = computed(() => [
+  { label: 'Aucun filtre', value: null },
+  ...gameOptions
+]);
+
+const stateOptionsWithNone = computed(() => [
+  { label: 'Aucun filtre', value: null }, 
+  ...stateOptions 
+]);
+
+const filterTournaments = () => {
+  const nameFilter = filters.value.name.toLowerCase();
+  const gameFilter = filters.value.game ? filters.value.game.value : null;
+  const stateFilter = filters.value.state ? filters.value.state.value : null;
+
+  filteredTournaments.value = allTournaments.value.filter(tournament => {
+    const nameMatch = tournament.tournament_name.toLowerCase().startsWith(nameFilter.toLowerCase());
+    const gameMatch = gameFilter ? tournament.game_id === gameFilter : true;
+    const stateMatch = stateFilter ? getTournamentState(tournament.start_date, tournament.end_date) === stateFilter : true;
+    return nameMatch && gameMatch && stateMatch;
+  });
+};
+
+
+
 onMounted(() => {
   fetchTournaments();
 });
@@ -144,4 +210,7 @@ onMounted(() => {
   align-items: center;
 }
 
+.filters {
+  margin-bottom: 1em;
+}
 </style>
