@@ -66,7 +66,7 @@ Replace `your_user` and `your_password` with your actual MySQL credentials. This
 
 ### Client (Quasar Vuejs)
 
-The client-side is now a Quasar project. Follow these steps to set it up:
+The client-side is a Quasar project. Follow these steps to set it up:
 
 1. Navigate to the `client` directory:
 
