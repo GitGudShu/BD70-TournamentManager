@@ -1,7 +1,7 @@
 import pool from '../config/database.js';
 
 export async function getTournamentRankings(req, res) {
-    console.log('----------------------------------------');
+    // console.log('----------------------------------------');
     const tournamentId = req.params.tournament_id;
 
     if (!tournamentId) {
@@ -9,7 +9,7 @@ export async function getTournamentRankings(req, res) {
     }
 
     try {
-        console.log(`Starting rankings computation for Tournament ID: ${tournamentId}`);
+        // console.log(`Starting rankings computation for Tournament ID: ${tournamentId}`);
 
         // Step 1: Fetch all matches for the tournament
         const matchesQuery = `
@@ -20,7 +20,7 @@ export async function getTournamentRankings(req, res) {
             WHERE tr.tournament_id = ?
         `;
         const [matches] = await pool.query(matchesQuery, [tournamentId]);
-        console.log('Matches:', matches);
+        // console.log('Matches:', matches);
 
         // Step 2: Fetch all players participating in the tournament
         const playersQuery = `
@@ -36,7 +36,7 @@ export async function getTournamentRankings(req, res) {
             )
         `;
         const [players] = await pool.query(playersQuery, [tournamentId]);
-        console.log('Players:', players);
+        // console.log('Players:', players);
 
         // Step 3: Build player statistics
         const playerStats = {};
@@ -48,7 +48,7 @@ export async function getTournamentRankings(req, res) {
             };
         });
 
-        console.log('Initial Player Stats:', playerStats);
+        // console.log('Initial Player Stats:', playerStats);
 
         // Step 4: Process matches to update player statistics
         matches.forEach(match => {
@@ -69,7 +69,7 @@ export async function getTournamentRankings(req, res) {
             }
         });
 
-        console.log('Updated Player Stats After Match Processing:', playerStats);
+        // console.log('Updated Player Stats After Match Processing:', playerStats);
 
         // Step 5: Identify the final match (latest by round and match_id)
         const finalMatchQuery = `
@@ -81,7 +81,7 @@ export async function getTournamentRankings(req, res) {
             LIMIT 1
         `;
         const [finalMatch] = await pool.query(finalMatchQuery, [tournamentId]);
-        console.log('Final Match:', finalMatch);
+        // console.log('Final Match:', finalMatch);
 
         if (finalMatch.length > 0) {
             const { match_id: finalMatchId, status: finalMatchStatus } = finalMatch[0];
@@ -140,7 +140,7 @@ export async function getTournamentRankings(req, res) {
             player.rank = rank;
         });
 
-        console.log('Final Computed Rankings:', rankings);
+        // console.log('Final Computed Rankings:', rankings);
 
         res.status(200).json(rankings);
     } catch (error) {

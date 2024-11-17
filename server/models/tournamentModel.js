@@ -1,4 +1,5 @@
 import pool from '../config/database.js';
+import { getNextMatchId } from '../middlewares/nextMatchId.js';
 
 export async function getAllTournaments() {
     const [rows] = await pool.query('SELECT * FROM Tournament');
@@ -60,35 +61,11 @@ export const createTournament = async (tournament_name, tournament_type, start_d
     }
 };
 
-// Fonction utilitaire pour obtenir le prochain match ID
-function getNextMatchId(totalParticipants, match_id) {
-    const totalRounds = Math.log2(totalParticipants);
-
-    let currentRound = 1;
-    let matchesInRound = totalParticipants / 2;
-    let roundStartId = 1;
-    let matchIndex = match_id - roundStartId;
-
-    // Localiser le round du match actuel
-    while (match_id >= roundStartId + matchesInRound) {
-        roundStartId += matchesInRound;
-        matchesInRound /= 2;
-        currentRound++;
-        matchIndex = match_id - roundStartId;
-    }
-
-    // Calculer l'ID du prochain match pour le round suivant
-    if (currentRound < totalRounds) {
-        const nextMatchIndex = Math.floor(matchIndex / 2);
-        const nextRoundStartId = roundStartId + matchesInRound;
-        return nextRoundStartId + nextMatchIndex;
-    }
-    return null;
-}
-
 export async function getFormattedTournamentDetails(tournamentId) {
     try {
-        // Récupérer les informations du tournoi, y compris nb_participants
+        console.log('----------------------------------------');
+        console.log(`Fetching tournament details for Tournament ID: ${tournamentId}`);
+
         const tournamentQuery = `
             SELECT nb_participants
             FROM Tournament
@@ -102,6 +79,18 @@ export async function getFormattedTournamentDetails(tournamentId) {
             WHERE tournament_id = ?
         `;
         const [roundsRows] = await pool.query(roundsQuery, [tournamentId]);
+
+        const startingMatchIdQuery = `
+            SELECT MIN(match_id) as startingMatchId
+            FROM Matchmaking
+            WHERE tournamentRound_id IN (
+                SELECT tournamentRound_id
+                FROM TournamentRound
+                WHERE tournament_id = ?
+            )
+        `;
+        const [startingMatchIdResult] = await pool.query(startingMatchIdQuery, [tournamentId]);
+        const startingMatchId = startingMatchIdResult[0].startingMatchId;
 
         const roundsWithMatches = await Promise.all(
             roundsRows.map(async (round) => {
@@ -135,6 +124,7 @@ export async function getFormattedTournamentDetails(tournamentId) {
                             `;
                             const [playerInfoRows] = await pool.query(playerQuery, [playerId]);
                             const player = playerInfoRows[0];
+                            console.log('Player:', player);
                             return {
                                 name: `${player.user_name} ${player.user_lastname}`,
                                 id: playerId
@@ -151,7 +141,9 @@ export async function getFormattedTournamentDetails(tournamentId) {
                             winner = "player2";
                         }
 
-                        const nextMatchID = getNextMatchId(totalParticipants, match.match_id);
+                        const nextMatchID = getNextMatchId(totalParticipants, match.match_id, startingMatchId);
+
+                        // console.log(`Next match ID for match ${match.match_id} is ${nextMatchID}`);
 
                         return {
                             id: match.match_id,
@@ -176,6 +168,24 @@ export async function getFormattedTournamentDetails(tournamentId) {
             })
         );
 
+        console.log("Schema of the tournament details:");
+        console.log(
+            JSON.stringify(
+                roundsWithMatches.map((round) => ({
+                    Round: round.round,
+                    Matches: round.matchs.map((match) => ({
+                        Match: match.id,
+                        Team1: match.team1,
+                        Team2: match.team2,
+                        Winner: match.winner,
+                        NextMatchID: match.nextMatchID,
+                    })),
+                })),
+                null,
+                2
+            )
+        );
+
         return roundsWithMatches;
     } catch (error) {
         console.error(error);
@@ -183,29 +193,46 @@ export async function getFormattedTournamentDetails(tournamentId) {
     }
 }
 
-export async function updateMatchScore(matchId, player1Id, score1, player2Id, score2, totalParticipants) {
+
+export async function updateMatchScore(matchId, player1Id, score1, player2Id, score2, totalParticipants, tournamentId) {
     try {
-      const nextMatchId = getNextMatchId(totalParticipants, matchId);
-      console.log("Paramètres envoyés à la procédure :", {
-        matchId,
-        player1Id,
-        score1,
-        player2Id,
-        score2,
-        nextMatchId,
-      });
-  
-      const result = await pool.query(
-        'CALL UpdateMatchResult(?, ?, ?, ?, ?, ?)', 
-        [matchId, player1Id, score1, player2Id, score2, nextMatchId]
-      );
-  
-      return { success: true, message: "Score mis à jour avec succès" };
+        // Fetch the startingMatchId dynamically
+        const startingMatchIdQuery = `
+            SELECT MIN(match_id) AS startingMatchId
+            FROM Matchmaking
+            WHERE tournamentRound_id IN (
+                SELECT tournamentRound_id
+                FROM TournamentRound
+                WHERE tournament_id = ?
+            )
+        `;
+        const [startingMatchIdResult] = await pool.query(startingMatchIdQuery, [tournamentId]);
+        const startingMatchId = startingMatchIdResult[0].startingMatchId;
+
+        console.log("Tournement ID", tournamentId);
+        console.log("Starting match ID:", startingMatchId);
+        const nextMatchId = getNextMatchId(totalParticipants, matchId, startingMatchId);
+
+        console.log("Parameters sent to the procedure:", {
+            matchId,
+            player1Id,
+            score1,
+            player2Id,
+            score2,
+            nextMatchId,
+        });
+
+        const result = await pool.query(
+            'CALL UpdateMatchResult(?, ?, ?, ?, ?, ?)', 
+            [matchId, player1Id, score1, player2Id, score2, nextMatchId]
+        );
+
+        return { success: true, message: "Score updated successfully" };
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du score :", error);
-      throw error;
+        console.error("Error while updating the score:", error);
+        throw error;
     }
-  }  
+}
 
 export async function generateTournamentRoundsForType1(tournamentId, participantCount) {
     try {

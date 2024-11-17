@@ -18,6 +18,7 @@
         <TTP
           v-if="rounds_mapped"
           :name="tournament.tournament_name"
+          :xid="tournament.tournament_id"
           :rounds="rounds_mapped"
           @request-rounds-update="fetchMatchDetails"
         />
@@ -83,7 +84,7 @@ const fetchTournamentDetails = async () => {
     try {
         const response = await api.get(`/getTournaments/${tournamentId}`);
         tournament.value = response.data;
-        // console.log("Fetched Tournament:", tournament.value);
+        console.log("Fetched Tournament:", tournament.value);
         // console.log("Rounds:", tournament.value.rounds);
     } catch (error) {
         console.error("Failed to fetch tournament details:", error);
@@ -95,7 +96,7 @@ const fetchMatchDetails = async () => {
     try {
         const response = await api.get(`/getFormattedTournaments/${tournamentId}`);
         rounds_mapped.value = response.data;
-        // console.log("Fetched Rounds:", rounds_mapped.value);
+        console.log("Fetched Rounds:", rounds_mapped.value);
 
         // Get ranking data
         fetchRankings();

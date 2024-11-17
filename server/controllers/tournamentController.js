@@ -145,7 +145,8 @@ export const handleUpdateMatchScore = async (req, res) => {
         team1.score,
         team2.playerId,
         team2.score,
-        totalParticipants
+        totalParticipants,
+        tournamentId
       );
   
       res.status(200).json(result);

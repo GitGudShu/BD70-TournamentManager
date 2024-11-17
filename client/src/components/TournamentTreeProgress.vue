@@ -47,6 +47,7 @@ import { api } from 'src/boot/axios';
 
 const props = defineProps({
   name: String,
+  xid: Number,
   rounds: {
     type: Array,
     required: true,
@@ -101,6 +102,7 @@ const updateWinner = (match, roundIndex, skipApiUpdate = false) => {
 const updateScore = async (match) => {
   try {
     const payload = {
+      tournamentId: props.xid,
       matchId: match.id,
       team1: {
         playerId: match.team1.id,
