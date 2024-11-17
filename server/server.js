@@ -7,6 +7,7 @@ import userRoutes from './routes/userRoutes.js';
 import tournamentRoutes from './routes/tournamentRoutes.js';  
 import matchRoutes from './routes/matchRoutes.js';
 import rankingRoutes from './routes/rankingRoutes.js';
+import statsRoutes from './routes/statsRoutes.js';  
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use(userRoutes); // User table routes
 app.use(tournamentRoutes);
 app.use(matchRoutes);
 app.use(rankingRoutes);
+app.use(statsRoutes);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

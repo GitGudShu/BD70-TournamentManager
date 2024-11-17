@@ -2,17 +2,18 @@
   <q-page>
     <div class="wrapper">
 
-      <div class="text-h5 graph-title text-bold">Pie chart test</div>
+      <div class="text-h4 graph-title text-bold">Les jeux populaires !</div>
       <PieChart
         :series="mostPlayedGames.map(game => game.plays)"
         :labels="mostPlayedGames.map(game => game.name)"
         :image_paths="mostPlayedGames.map(game => game.image_path)"
       />
 
-      <div class="text-h5 graph-title text-bold">Group chart test</div>
+      <div class="text-h4 graph-title text-bold">Historique récent de vos parties, {{ userName }} !</div>
       <MixChart
+        v-if="playerStats.length"
         :series="playerStats"
-        :categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']"
+        :categories="playerStatsCategories"
         :colors="['#9B5DE5', '#D9AFFD', '#8E44AD', '#BB8FCE', '#D0A9F5']"
       />
 
@@ -21,23 +22,24 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import PieChart from 'src/components/stats/Piechart.vue';
 import MixChart from 'src/components/stats/Mixchart.vue';
+import { useAuthStore } from 'src/stores/authStore';
 import { api } from 'src/boot/axios';
+
+const authStore = useAuthStore();
+const userName = computed(() => authStore.userName);
+const playerId = computed(() => authStore.playerId);
 
 const mostPlayedGames = ref([]);
 const playerStats = ref([]);
+const playerStatsCategories = ref([]);
 
 const fetchMostPlayedGames = async () => {
   try {
-    // Test data
-    mostPlayedGames.value = [
-      { name: 'Go', plays: 44, image_path: 'games/go.jpg' },
-      { name: 'Chess', plays: 33, image_path: 'games/chess.jpg' },
-      { name: 'Draughts', plays: 54, image_path: 'games/draughts.jpg' },
-      { name: 'Shogi', plays: 45, image_path: 'games/shogi.jpg' }
-    ];
+    const response = await api.get('/popular-games');
+    mostPlayedGames.value = response.data;
   } catch (error) {
     console.error("Fetch failed", error);
   }
@@ -46,22 +48,23 @@ const fetchMostPlayedGames = async () => {
 // Fetch data to get player's participation and performance over time
 const fetchPlayerParticipationNPerformance = async () => {
   try {
-    // Test data
+    const response = await api.get(`/player-stats/${playerId.value}`);
+    playerStatsCategories.value = response.data.months;
     playerStats.value = [
       {
-        name: 'Matches Played',
+        name: 'Matchs joués',
         type: 'column',
-        data: [5, 8, 7, 10, 12, 9, 11, 14],
+        data: response.data.matchesPlayed,
       },
       {
-        name: 'Win Rate',
+        name: 'Matchs gagnés',
         type: 'column',
-        data: [55, 60, 65, 68, 72, 75, 78, 80],
+        data: response.data.matchesWon,
       },
       {
-        name: 'Win Rate',
+        name: 'Meilleur joueur',
         type: 'line',
-        data: [55, 60, 65, 68, 72, 75, 78, 80],
+        data: response.data.topPlayerMatchesWon,
       },
     ];
     if (!playerStats.value || !playerStats.value.length) {
