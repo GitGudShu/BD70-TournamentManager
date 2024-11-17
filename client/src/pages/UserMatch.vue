@@ -22,6 +22,7 @@
               :content="`
                 Jeu: ${getGameDetails(tournament.game_id).name} <br>
                 Participants: ${tournament.nb_participants} <br>
+                Dates: ${new Date(tournament.start_date).toLocaleDateString()} - ${new Date(tournament.end_date).toLocaleDateString()} <br>
                 Type: ${getTournamentType(tournament.tournament_type)}
               `"
               :image="getGameDetails(tournament.game_id).image"
@@ -78,7 +79,7 @@ const fetchTournaments = async () => {
   try {
     const response = await api.get(`/getPlayerTournaments/${playerId.value}`);
     yourTournaments.value = response.data;
-    // console.log("Your tournaments: ", yourTournaments.value);
+    console.log("Your tournaments: ", yourTournaments.value);
   } catch (error) {
     console.error("Fetch tournaments failed", error);
   }

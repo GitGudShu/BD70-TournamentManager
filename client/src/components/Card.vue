@@ -104,6 +104,8 @@ const goToTournamentDetails = (tournamentId) => {
   router.push(`/tournament/${tournamentId}`);
 };
 
+// Log image props
+// console.log("Image: ", props.image);
 
 </script>
 

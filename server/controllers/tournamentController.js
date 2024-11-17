@@ -161,7 +161,7 @@ export const handleUpdateMatchScore = async (req, res) => {
     try {
         // Query to fetch tournaments a player participated in
         const query = `
-            SELECT DISTINCT t.tournament_id, t.tournament_name, t.start_date, t.end_date
+            SELECT DISTINCT t.tournament_id, t.tournament_name, t.start_date, t.end_date, t.nb_participants, t.game_id
             FROM Tournament t
             JOIN TournamentRound tr ON t.tournament_id = tr.tournament_id
             JOIN Matchmaking m ON tr.tournamentRound_id = m.tournamentRound_id
