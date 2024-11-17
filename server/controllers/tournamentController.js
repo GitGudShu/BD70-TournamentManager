@@ -155,7 +155,7 @@ export const handleUpdateMatchScore = async (req, res) => {
     }
   };  
 
-  export async function getPlayerTournaments(req, res) {
+export async function getPlayerTournaments(req, res) {
     const playerId = req.params.playerId;
 
     try {
@@ -172,7 +172,7 @@ export const handleUpdateMatchScore = async (req, res) => {
         const [results] = await pool.query(query, [playerId]);
 
         if (results.length === 0) {
-            return res.status(404).json({ error: 'No tournaments found for this player' });
+            return res.status(200).json([]);
         }
 
         res.status(200).json(results);
