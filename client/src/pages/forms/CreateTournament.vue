@@ -83,10 +83,10 @@ const organizerId = computed(() => authStore.organizerId);
 
 const tournamentTypes = [
     { label: 'Arbre unique', value: 1 },
-    { label: 'Ronde suisse + élimination directe', value: 2 },
-    { label: 'Winner/Looser bracket', value: 3 },
-    { label: 'Championnat', value: 4 },
-    { label: 'Championnat puis playoffs', value: 5 },
+    { label: 'Championnat', value: 2 },
+    { label: 'Championnat puis playoffs', value: 3 },
+    { label: 'Swiss stage', value: 4 },
+    { label: 'Winner/Looser bracket', value: 5 },
     { label: 'Phases de groupes', value: 6 },
 ];
 
