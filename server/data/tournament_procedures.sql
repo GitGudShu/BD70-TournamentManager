@@ -64,7 +64,7 @@ DELIMITER ;
 
 DELIMITER //
 
-CREATE PROCEDURE GenerateChampionshipTournamentRounds(
+CREATE PROCEDURE GenerateTournamentRoundsForType2(
     IN p_tournament_id INT,
     IN p_participant_count INT
 )

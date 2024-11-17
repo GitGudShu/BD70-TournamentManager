@@ -1,0 +1,41 @@
+INSERT INTO Team (team_name) VALUES 
+('Mercedes'),
+('Red Bull Racing'),
+('Ferrari'),
+('Aston Martin'),
+('Alpine'),
+('McLaren'),
+('Alfa Romeo'),
+('Alfa Tauri'),
+('Williams'),
+('Haas F1 Team'),
+('Porsche Team'),
+('BMW Motorsport'),
+('Audi Sport'),
+('Renault Sport'),
+('Toyota Racing'),
+('Honda Racing'),
+('Peugeot Sport'),
+('Jaguar Racing'),
+('Lotus F1 Team'),
+('Sauber F1 Team');
+
+-- Insertion des associations entre joueurs et équipes dans PlayerTeam
+-- On suppose que l'ID des joueurs et des équipes sont auto-incrémentés
+INSERT INTO PlayerTeam (player_id, team_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10),
+(11, 11),
+(12, 12),
+(13, 13),
+(14, 14),
+(15, 15),
+(16, 16);

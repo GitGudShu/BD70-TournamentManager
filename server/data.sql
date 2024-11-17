@@ -144,3 +144,4 @@ SOURCE data/user_procedures.sql;
 SOURCE data/insert_games.sql;
 SOURCE data/insert_users.sql;
 SOURCE data/insert_tournaments.sql;
+SOURCE data/insert_team.sql;

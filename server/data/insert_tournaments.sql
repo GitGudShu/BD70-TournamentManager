@@ -16,11 +16,15 @@ INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (2, 4, NULL,
 INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (3, 5, NULL, NULL);
 INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (4, 5, NULL, NULL);
 
+INSERT INTO Tournament (tournament_name, tournament_type, start_date, end_date, nb_participants, game_id, organizer_id) 
+VALUES ('ChampionshipTest', 2, '2024-12-01', '2024-12-10', 12, 2, 1);
+
+CALL GenerateTournamentRoundsForType2(3, 12);
+
 INSERT INTO Tournament (tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id) 
-VALUES ('ChampionshipTest', 2, '2024-12-01', '2024-12-10', 12, 8, 2, 1);
+VALUES ('ChampionshipTestWithPlayoff', 3, '2024-12-01', '2024-12-10', 20, 8, 2, 1);
 
-
-CALL GenerateChampionshipTournamentRounds(3, 12);
+CALL GenerateTournamentRoundsForType2(4, 20);
 
 -- INSERT LOTS OF TOURNAMENTS
 DELIMITER //
@@ -41,6 +45,8 @@ BEGIN
     DECLARE player_index INT;
     DECLARE match_index INT;
     DECLARE current_match_id INT;
+
+    DROP TEMPORARY TABLE IF EXISTS TempMatches;
 
     -- Create a temporary table to hold match IDs
     CREATE TEMPORARY TABLE TempMatches (
