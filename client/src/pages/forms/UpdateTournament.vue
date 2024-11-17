@@ -103,13 +103,13 @@ const fetchGames = async () => {
 
 onMounted(() => {
   fetchGames();
-  fetchTournamentDetails(); 
+  fetchTournamentDetails();
 });
 
 const tournamentDetails = ref(null);
 
 const fetchTournamentDetails = async () => {
-  const tournamentId = route.params.tournamentId;  
+  const tournamentId = route.params.tournamentId;
   try {
     const response = await api.get(`/getTournaments/${tournamentId}`);
     tournamentDetails.value = response.data;
@@ -128,6 +128,17 @@ const fetchTournamentDetails = async () => {
 };
 
 const updateTournament = async () => {
+  // Log the tournament data
+  console.log('Tournament edit data:', {
+    tournamentName: tournamentName.value,
+    selectedTournamentType: selectedTournamentType.value,
+    participantCount: participantCount.value,
+    playoffTeams: playoffTeams.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
+    selectedGame: selectedGame.value.value,
+    organizerId: organizerId.value,
+  });
   const tournamentData = {
     tournamentId: parseInt(route.params.tournamentId, 10),
     tournament_name: tournamentName.value,
@@ -136,7 +147,7 @@ const updateTournament = async () => {
     end_date: endDate.value,
     nb_participants: participantCount.value,
     playoffTeams: playoffTeams.value || null,
-    game_id: selectedGame.value,
+    game_id: selectedGame.value.value,
     organizer_id: organizerId.value,
   };
 
