@@ -69,16 +69,27 @@ CREATE PROCEDURE GenerateChampionshipTournamentRounds(
     IN p_participant_count INT
 )
 BEGIN
+    -- Déclaration de toutes les variables au début
     DECLARE round_counter INT DEFAULT 1;
     DECLARE i INT;
     DECLARE j INT;
     DECLARE new_round_id INT;
+    DECLARE playoff_teams INT;
+    DECLARE playoff_round INT DEFAULT 1;
+    DECLARE currentMatchCount INT;
+    DECLARE new_playoff_round_id INT;
+    DECLARE match_count INT;
 
-    -- Boucle pour générer un round pour chaque "journée"
+    -- Récupérer la valeur de playoffTeams depuis la table Tournament
+    SELECT playoffTeams INTO playoff_teams
+    FROM Tournament
+    WHERE tournament_id = p_tournament_id;
+
+    -- Boucle pour générer un round pour chaque "journée" (phase de round-robin)
     WHILE round_counter <= p_participant_count - 1 DO
-        -- Insérer un round
+        -- Insérer un round dans la section 1 pour le round-robin
         INSERT INTO TournamentRound (round, section, tournament_id)
-        VALUES (CONCAT('Round ', round_counter), round_counter, p_tournament_id);
+        VALUES (CONCAT('Round ', round_counter), 1, p_tournament_id);  -- Section 1 pour round-robin
         
         -- Obtenir l'ID du round créé
         SET new_round_id = LAST_INSERT_ID();
@@ -99,9 +110,39 @@ BEGIN
 
         SET round_counter = round_counter + 1;
     END WHILE;
+
+    -- Si playoffTeams est fourni (non NULL et une puissance de 2), créer les rounds pour les playoffs
+    IF playoff_teams IS NOT NULL AND (playoff_teams & (playoff_teams - 1)) = 0 THEN
+        -- Calculer le nombre total de rounds nécessaires pour les playoffs
+        SET currentMatchCount = playoff_teams / 2;
+
+        -- Boucle pour insérer les rounds et les matchs des playoffs (section 2)
+        WHILE playoff_round <= LOG2(playoff_teams) DO
+            -- Insérer un round dans la section 2 pour les playoffs
+            INSERT INTO TournamentRound (round, section, tournament_id)
+            VALUES (CONCAT('Playoff Round ', playoff_round), 2, p_tournament_id);  -- Section 2 pour les playoffs
+            
+            -- Obtenir l'ID du round créé
+            SET new_playoff_round_id = LAST_INSERT_ID();
+
+            -- Boucle pour insérer les matchs pour ce round des playoffs
+            SET match_count = 1;
+            WHILE match_count <= currentMatchCount DO
+                INSERT INTO Matchmaking (match_date, location, status, tournamentRound_id)
+                VALUES (NULL, NULL, 0, new_playoff_round_id);  -- Match entre les joueurs
+
+                SET match_count = match_count + 1;
+            END WHILE;
+
+            -- Diviser par 2 le nombre de matchs pour le round suivant
+            SET currentMatchCount = currentMatchCount / 2;
+            SET playoff_round = playoff_round + 1;
+        END WHILE;
+    END IF;
 END //
 
 DELIMITER ;
+
 
 -- player participe tournament
 DELIMITER //
