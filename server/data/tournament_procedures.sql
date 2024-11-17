@@ -62,6 +62,47 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+
+CREATE PROCEDURE GenerateChampionshipTournamentRounds(
+    IN p_tournament_id INT,
+    IN p_participant_count INT
+)
+BEGIN
+    DECLARE round_counter INT DEFAULT 1;
+    DECLARE i INT;
+    DECLARE j INT;
+    DECLARE new_round_id INT;
+
+    -- Boucle pour générer un round pour chaque "journée"
+    WHILE round_counter <= p_participant_count - 1 DO
+        -- Insérer un round
+        INSERT INTO TournamentRound (round, section, tournament_id)
+        VALUES (CONCAT('Round ', round_counter), round_counter, p_tournament_id);
+        
+        -- Obtenir l'ID du round créé
+        SET new_round_id = LAST_INSERT_ID();
+
+        -- Boucle pour générer les matchs dans ce round
+        SET i = 1;
+        WHILE i <= p_participant_count / 2 DO
+            -- Trouver les joueurs pour chaque match
+            SET j = p_participant_count - i + 1;
+
+            -- Insérer les matchs pour cette journée
+            INSERT INTO Matchmaking (match_date, location, status, tournamentRound_id)
+            VALUES (NULL, NULL, 0, new_round_id);  -- Match entre les joueurs i et j
+
+            -- Passer au match suivant
+            SET i = i + 1;
+        END WHILE;
+
+        SET round_counter = round_counter + 1;
+    END WHILE;
+END //
+
+DELIMITER ;
+
 -- player participe tournament
 DELIMITER //
 CREATE PROCEDURE ParticipateInTournament(

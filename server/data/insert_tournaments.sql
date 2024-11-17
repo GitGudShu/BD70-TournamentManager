@@ -16,6 +16,12 @@ INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (2, 4, NULL,
 INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (3, 5, NULL, NULL);
 INSERT INTO PlayerMatch (player_id, match_id, score, status) VALUES (4, 5, NULL, NULL);
 
+INSERT INTO Tournament (tournament_name, tournament_type, start_date, end_date, nb_participants, game_id, organizer_id) 
+VALUES ('ChampionshipTest', 2, '2024-12-01', '2024-12-10', 12, 2, 1);
+
+
+CALL GenerateChampionshipTournamentRounds(3, 12);
+
 -- INSERT LOTS OF TOURNAMENTS
 DELIMITER //
 
