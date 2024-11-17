@@ -6,6 +6,7 @@ import { generateTournamentRoundsForType3 } from '../models/tournamentModel.js';
 import { generateTournamentRoundsForType4 } from '../models/tournamentModel.js';
 import { generateTournamentRoundsForType5 } from '../models/tournamentModel.js';
 import { generateTournamentRoundsForType6 } from '../models/tournamentModel.js';
+import { editTournament, deleteTournament } from '../models/tournamentModel.js';
 
 import { getAllTournaments } from '../models/tournamentModel.js';
 import { getTournamentDetails } from '../models/tournamentModel.js';
@@ -91,6 +92,131 @@ export const handleCreateTournament = async (req, res) => {
     }
 };
 
+async function deleteTournamentMatchmakingAndRounds(tournamentId) {
+    try {
+        await pool.query(`
+            DELETE FROM PlayerMatch
+            WHERE match_id IN (
+                SELECT match_id FROM Matchmaking
+                WHERE tournamentRound_id IN (
+                    SELECT tournamentRound_id FROM TournamentRound
+                    WHERE tournament_id = ?
+                )
+            )
+        `, [tournamentId]);
+
+        await pool.query(`
+            DELETE FROM Matchmaking
+            WHERE tournamentRound_id IN (
+                SELECT tournamentRound_id FROM TournamentRound
+                WHERE tournament_id = ?
+            )
+        `, [tournamentId]);
+
+        await pool.query(`
+            DELETE FROM TournamentRound WHERE tournament_id = ?
+        `, [tournamentId]);
+
+    } catch (error) {
+        console.error('Erreur lors de la suppression des données liées au tournoi:', error);
+        throw new Error('Erreur lors de la suppression des matchmaking et rounds');
+    }
+}
+
+export const handleEditTournament = async (req, res) => {
+    const { tournamentId, tournament_name, tournament_type, start_date, end_date, playoffTeams, game_id, organizer_id, nb_participants } = req.body;
+
+    console.log(tournamentId, tournament_name, tournament_type, start_date, end_date, playoffTeams, game_id, organizer_id, nb_participants);
+
+    try {
+        const tournament = await getTournamentDetails(tournamentId);
+
+        if (!tournament) {
+            return res.status(404).json({ error: 'Tournoi non trouvé' });
+        }
+
+        const [rows] = await pool.query(`
+            SELECT COUNT(*) AS participant_count
+            FROM PlayerMatch
+            WHERE match_id IN (
+                SELECT match_id FROM Matchmaking
+                WHERE tournamentRound_id IN (
+                    SELECT tournamentRound_id FROM TournamentRound
+                    WHERE tournament_id = ?
+                )
+            )
+        `, [tournamentId]);
+
+        if (rows[0].participant_count > 0) {
+            console.log('Impossible de modifier le tournoi car des participants sont déjà inscrits.')
+            return res.status(400).json({ error: 'Impossible de modifier le tournoi car des participants sont déjà inscrits.' });
+        }
+
+        await deleteTournamentMatchmakingAndRounds(tournamentId);
+
+        const updateMessage = await editTournament(
+            tournamentId,
+            tournament_name,
+            tournament_type,
+            start_date,
+            end_date,
+            nb_participants,
+            playoffTeams,
+            game_id,
+            organizer_id
+        );
+
+        switch (tournament_type) {
+            case 1:
+                console.log("Tournoi type 1");
+                await generateTournamentRoundsForType1(tournamentId, nb_participants);
+                break;
+
+            case 2:
+                console.log("Tournoi type 2");
+                await generateTournamentRoundsForType2(tournamentId, nb_participants);
+                break;
+
+            case 3:
+                console.log("Tournoi type 3");
+                await generateTournamentRoundsForType3(tournamentId, nb_participants);
+                break;
+
+            case 4:
+                console.log("Tournoi type 4");
+                await generateTournamentRoundsForType4(tournamentId, nb_participants);
+                break;
+
+            case 5:
+                console.log("Tournoi type 5");
+                await generateTournamentRoundsForType5(tournamentId, nb_participants);
+                break;
+
+            case 6:
+                console.log("Tournoi type 6");
+                await generateTournamentRoundsForType6(tournamentId, nb_participants);
+                break;
+
+            default:
+                console.log("Type de tournoi non supporté");
+        }
+
+        res.status(200).json({ message: updateMessage, tournamentId });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erreur interne du serveur' });
+    }
+};
+
+export const handleDelete = async (req, res) => {
+    const { tournamentId } = req.params;
+    try {
+        const result = await deleteTournament(tournamentId);
+        res.status(200).json({ message: result });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur lors de la suppression du tournoi", error: error.message });
+    }
+};
 
 export async function getTournamentDetailsController(req, res) {
     const tournamentId = req.params.tournamentId;

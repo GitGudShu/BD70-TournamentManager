@@ -178,3 +178,75 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+
+CREATE PROCEDURE EditTournament(
+    IN p_tournament_id INT,
+    IN p_tournament_name VARCHAR(100),
+    IN p_tournament_type VARCHAR(50),
+    IN p_start_date DATE,
+    IN p_end_date DATE,
+    IN p_nb_participants INT,
+    IN p_playoffTeams INT,
+    IN p_game_id INT,
+    IN p_organizer_id INT
+)
+BEGIN
+    -- Vérification si le tournoi a des participants
+    DECLARE participant_count INT;
+
+    SELECT COUNT(*) INTO participant_count
+    FROM PlayerMatch
+    WHERE match_id IN (SELECT match_id FROM Matchmaking WHERE tournamentRound_id IN (SELECT tournamentRound_id FROM TournamentRound WHERE tournament_id = p_tournament_id));
+
+    IF participant_count > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Impossible de modifier le tournoi car des participants sont déjà inscrits';
+    ELSE
+        -- Mise à jour du tournoi
+        UPDATE Tournament
+        SET tournament_name = p_tournament_name,
+            tournament_type = p_tournament_type,
+            start_date = p_start_date,
+            end_date = p_end_date,
+            nb_participants = p_nb_participants,
+            playoffTeams = p_playoffTeams,
+            game_id = p_game_id,
+            organizer_id = p_organizer_id
+        WHERE tournament_id = p_tournament_id;
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE DeleteTournament(
+    IN p_tournament_id INT
+)
+BEGIN
+    -- Suppression des enregistrements dans PlayerMatch liés au tournoi
+    DELETE FROM PlayerMatch
+    WHERE match_id IN (
+        SELECT match_id FROM Matchmaking
+        WHERE tournamentRound_id IN (
+            SELECT tournamentRound_id FROM TournamentRound
+            WHERE tournament_id = p_tournament_id
+        )
+    );
+
+    -- Suppression des récompenses liées au tournoi
+    DELETE FROM Reward WHERE tournament_id = p_tournament_id;
+
+    -- Suppression des matchs liés au tournoi
+    DELETE FROM Matchmaking WHERE tournamentRound_id IN (
+        SELECT tournamentRound_id FROM TournamentRound WHERE tournament_id = p_tournament_id
+    );
+
+    -- Suppression des tours liés au tournoi
+    DELETE FROM TournamentRound WHERE tournament_id = p_tournament_id;
+
+    -- Suppression du tournoi
+    DELETE FROM Tournament WHERE tournament_id = p_tournament_id;
+END //
+
+DELIMITER ;

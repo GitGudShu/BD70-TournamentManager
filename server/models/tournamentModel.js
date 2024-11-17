@@ -61,6 +61,54 @@ export const createTournament = async (tournament_name, tournament_type, start_d
     }
 };
 
+export const editTournament = async (tournament_id, tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT COUNT(*) AS participant_count
+            FROM PlayerMatch
+            WHERE match_id IN (
+                SELECT match_id FROM Matchmaking
+                WHERE tournamentRound_id IN (
+                    SELECT tournamentRound_id FROM TournamentRound
+                    WHERE tournament_id = ?
+                )
+            )
+        `, [tournament_id]);
+
+        if (rows[0].participant_count > 0) {
+            throw new Error("Impossible de modifier le tournoi car des participants sont déjà inscrits");
+        }
+
+        const [result] = await pool.query(
+            'CALL EditTournament(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [tournament_id, tournament_name, tournament_type, start_date, end_date, nb_participants, playoffTeams, game_id, organizer_id]
+        );
+
+        return "Tournoi modifié avec succès";
+    } catch (error) {
+        if (error.message === "Impossible de modifier le tournoi car des participants sont déjà inscrits") {
+            console.error("Erreur : Impossible de modifier le tournoi car des participants sont déjà inscrits");
+            throw new Error("Impossible de modifier le tournoi car des participants sont déjà inscrits");
+        } else {
+            console.error("Erreur dans la modification du tournoi:", error);
+            throw error;
+        }
+    }
+};
+
+export const deleteTournament = async (tournament_id) => {
+    try {
+        const [result] = await pool.query(
+            'CALL DeleteTournament(?)',
+            [tournament_id]
+        );
+        return "Tournoi supprimé avec succès";
+    } catch (error) {
+        console.error("Erreur dans la suppression du tournoi:", error);
+        throw error;
+    }
+};
+
 export async function getFormattedTournamentDetails(tournamentId) {
     try {
         console.log('----------------------------------------');

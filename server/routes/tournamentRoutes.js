@@ -5,7 +5,9 @@ import {
     getTournamentDetailsController,
     getTournamentDetailById,
     handleUpdateMatchScore,
-    getPlayerTournaments
+    getPlayerTournaments,
+    handleEditTournament,
+    handleDelete
 } from '../controllers/tournamentController.js';
 
 
@@ -18,5 +20,8 @@ router.get('/api/getTournaments', getTournaments);
 router.get('/api/getTournaments/:tournamentId', getTournamentDetailById);
 router.get('/api/getFormattedTournaments/:tournamentId', getTournamentDetailsController);
 router.get('/api/getPlayerTournaments/:playerId', getPlayerTournaments);
+
+router.put('/api/tournaments/:tournamentId', handleEditTournament);
+router.delete('/api/tournaments/:tournamentId', handleDelete);
 
 export default router;

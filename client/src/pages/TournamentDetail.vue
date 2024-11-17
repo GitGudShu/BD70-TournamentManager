@@ -15,6 +15,16 @@
 
 
       <template v-if="userRole == 'Organisateur'">
+        <div class="tournament-actions">
+          <button @click="editTournament" class="btn-edit-tournament">
+            Edit Tournament
+          </button>
+
+          <!-- Bouton Delete Tournament -->
+          <button @click="deleteTournament" class="btn-delete-tournament">
+            Delete Tournament
+          </button>
+        </div>
         <TTP
           v-if="rounds_mapped"
           :name="tournament.tournament_name"
@@ -117,6 +127,26 @@ const fetchRankings = async () => {
         // console.log("Fetched Rankings:", rankingData.value);
     } catch (error) {
         console.error("Failed to fetch rankings:", error);
+    }
+};
+
+const editTournament = () => {
+  const tournamentId = route.params.tournamentId;
+  router.push(`/edit_tournament/${tournamentId}`);
+};
+
+const deleteTournament = async () => {
+    try {
+        const tournamentId = route.params.tournamentId;
+        const response = await api.delete(`/tournaments/${tournamentId}`);
+
+        if (response.status === 200) {
+            router.push({ path: '/tournament' });
+        } else {
+            console.error("Erreur lors de la suppression du tournoi:", response.data);
+        }
+    } catch (error) {
+        console.error("Error deleting tournament:", error);
     }
 };
 

@@ -6,6 +6,7 @@ import UpdateProfile from 'pages/forms/UpdateProfile.vue';
 import Statistics from 'src/pages/Statistics.vue';
 import Tournament from 'src/pages/Tournament.vue';
 import CreateTournament from 'pages/forms/CreateTournament.vue';
+import UpdateTournament from 'pages/forms/UpdateTournament.vue';
 import Match from 'src/pages/UserMatch.vue';
 import TournamentDetails from 'src/pages/TournamentDetail.vue';
 
@@ -43,6 +44,11 @@ const routes = [
       {
         path: 'create_tournament',
         component: CreateTournament
+      },
+      {
+        path: '/edit_tournament/:tournamentId',
+        component: UpdateTournament,
+        props: true
       },
       {
         path: 'tournament/:tournamentId',
