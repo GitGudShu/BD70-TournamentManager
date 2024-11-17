@@ -159,7 +159,7 @@ const getGameDetails = (gameId) => {
 };
 
 const gameOptionsWithNone = computed(() => [
-  { label: 'Aucun filtre', value: null },
+  { label: 'Aucun filtre', value: null }, 
   ...gameOptions
 ]);
 
@@ -174,14 +174,20 @@ const filterTournaments = () => {
   const stateFilter = filters.value.state ? filters.value.state.value : null;
 
   filteredTournaments.value = allTournaments.value.filter(tournament => {
-    const nameMatch = tournament.tournament_name.toLowerCase().startsWith(nameFilter.toLowerCase());
+    const nameMatch = tournament.tournament_name.toLowerCase().includes(nameFilter.toLowerCase());
     const gameMatch = gameFilter ? tournament.game_id === gameFilter : true;
     const stateMatch = stateFilter ? getTournamentState(tournament.start_date, tournament.end_date) === stateFilter : true;
     return nameMatch && gameMatch && stateMatch;
   });
 };
 
+const resetFilters = () => {
+  filters.value.name = '';
+  filters.value.game = null;
+  filters.value.state = null;
 
+  filterTournaments();
+};
 
 onMounted(() => {
   fetchTournaments();
