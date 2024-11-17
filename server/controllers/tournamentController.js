@@ -154,3 +154,30 @@ export const handleUpdateMatchScore = async (req, res) => {
       res.status(500).json({ success: false, message: 'Erreur lors de la mise à jour du score' });
     }
   };  
+
+  export async function getPlayerTournaments(req, res) {
+    const playerId = req.params.playerId;
+
+    try {
+        // Query to fetch tournaments a player participated in
+        const query = `
+            SELECT DISTINCT t.tournament_id, t.tournament_name, t.start_date, t.end_date
+            FROM Tournament t
+            JOIN TournamentRound tr ON t.tournament_id = tr.tournament_id
+            JOIN Matchmaking m ON tr.tournamentRound_id = m.tournamentRound_id
+            JOIN PlayerMatch pm ON m.match_id = pm.match_id
+            WHERE pm.player_id = ?
+        `;
+
+        const [results] = await pool.query(query, [playerId]);
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'No tournaments found for this player' });
+        }
+
+        res.status(200).json(results);
+    } catch (error) {
+        console.error('Error fetching tournaments for player:', error);
+        res.status(500).json({ error: 'Failed to fetch tournaments for the player' });
+    }
+}

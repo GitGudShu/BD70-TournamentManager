@@ -38,10 +38,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { api } from 'src/boot/axios';
 import Card from 'src/components/Card.vue';
 import Impossible from 'src/components/Impossible.vue';
+import { useAuthStore } from 'src/stores/authStore';
+
+const authStore = useAuthStore();
+const playerId = computed(() => authStore.playerId);
 
 const yourTournaments = ref([]);
 
@@ -72,7 +76,7 @@ const getGameDetails = (gameId) => {
 
 const fetchTournaments = async () => {
   try {
-    const response = await api.get('/getTournaments');
+    const response = await api.get(`/getPlayerTournaments/${playerId.value}`);
     yourTournaments.value = response.data;
     // console.log("Your tournaments: ", yourTournaments.value);
   } catch (error) {
