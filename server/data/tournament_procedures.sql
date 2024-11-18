@@ -332,3 +332,51 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE TournamentFilter(
+    IN p_tournament_name VARCHAR(100),
+    IN p_nb_participants INT,
+    IN p_game_id INT,
+    IN p_start_date DATE,
+    IN p_end_date DATE
+)
+BEGIN
+    SET @query = 'SELECT * FROM Tournament WHERE 1=1';
+
+    IF p_tournament_name IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND tournament_name LIKE @tournament_name');
+        SET @tournament_name = CONCAT('%', p_tournament_name, '%');
+    END IF;
+
+    IF p_nb_participants IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND nb_participants = @nb_participants');
+        SET @nb_participants = p_nb_participants;
+    END IF;
+
+    IF p_game_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND game_id = @game_id');
+        SET @game_id = p_game_id;
+    END IF;
+
+    IF p_start_date IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND start_date >= @start_date');
+        SET @start_date = p_start_date;
+    END IF;
+
+    IF p_end_date IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND end_date <= @end_date');
+        SET @end_date = p_end_date;
+    END IF;
+
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END //
+
+DELIMITER ;
+
+CALL TournamentFilter(NULL, 16, NULL, NULL, NULL);
+CALL TournamentFilter(NULL, NULL, 3, '2024-01-01', '2024-12-31');
+CALL TournamentFilter('Winter', 8, 2, '2024-01-01', '2024-02-01');
