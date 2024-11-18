@@ -146,3 +146,5 @@ SOURCE data/insert_users.sql;
 SOURCE data/insert_team.sql;
 SOURCE data/team_procedures.sql
 SOURCE data/insert_tournaments.sql;
+SOURCE data/insert_reward.sql;
+SOURCE data/reward_procedure.sql;
